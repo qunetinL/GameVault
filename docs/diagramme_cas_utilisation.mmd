@@ -1,0 +1,56 @@
+flowchart LR
+    %% Acteurs
+    Visiteur(["👤 Visiteur\n(Non Authentifié)"])
+    Utilisateur(["👤 Joueur\n(Authentifié)"])
+    Admin(["👑 Administrateur"])
+
+    %% Système GameVault
+    subgraph GameVault ["🎮 Système GameVault"]
+        %% Inscription / Profil
+        UC1(["S'inscrire / Se connecter"])
+        UC2(["Gérer son profil et Avatar"])
+        
+        %% Collection & Recherche
+        UC3(["Gérer sa collection de jeux\n(Ajout, Modif, Suppr, Notes, Tags)"])
+        UC4(["Recherche dynamique & Filtrage\n(AJAX Temps Réel)"])
+        
+        %% Sessions Gaming
+        UC5(["Créer/Gérer une session gaming"])
+        UC6(["Inviter des amis / Voter pour un jeu"])
+        
+        %% Chat & Stats
+        UC7(["Discuter dans le Chat (Temps réel)"])
+        UC8(["Consulter le Dashboard Statistiques\n(Graphiques NoSQL)"])
+        
+        %% Administration & API
+        UC9(["Modérer le contenu et les utilisateurs"])
+        UC10(["Consommer / Exposer l'API REST JSON"])
+    end
+
+    %% Relations Visiteur
+    Visiteur --> UC1
+    Visiteur --> UC4
+
+    %% Relations Utilisateur Connecté
+    Utilisateur -->|Authentification| UC1
+    Utilisateur --> UC2
+    Utilisateur --> UC3
+    Utilisateur --> UC4
+    Utilisateur --> UC5
+    Utilisateur --> UC6
+    Utilisateur --> UC7
+    Utilisateur --> UC8
+    Utilisateur --> UC10
+
+    %% Relations Administrateur
+    Admin -.->|Hérite des droits Joueur| Utilisateur
+    Admin --> UC9
+
+    %% Styles et Couleurs
+    classDef actorStyle fill:#2c3e50,stroke:#34495e,stroke-width:2px,color:#ecf0f1
+    classDef useCaseStyle fill:#ecf0f1,stroke:#bdc3c7,stroke-width:2px,color:#2c3e50
+    classDef systemStyle fill:#ecf0f1,stroke:#2980b9,stroke-width:3px,stroke-dasharray: 5 5
+
+    class Visiteur,Utilisateur,Admin actorStyle
+    class UC1,UC2,UC3,UC4,UC5,UC6,UC7,UC8,UC9,UC10 useCaseStyle
+    class GameVault systemStyle
