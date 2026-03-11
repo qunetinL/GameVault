@@ -1,0 +1,128 @@
+classDiagram
+    %% ═══════════════════════════════════════════════════
+    %% Diagramme de Classe UML — GameVault
+    %% ═══════════════════════════════════════════════════
+
+    class User {
+        -int id
+        -string username
+        -string email
+        -string password_hash
+        -string avatar
+        -string role
+        -datetime created_at
+        -datetime updated_at
+        +register() bool
+        +login() bool
+        +logout() void
+        +updateProfile() bool
+        +getCollection() Collection[]
+        +getSessions() Session[]
+    }
+
+    class Game {
+        -int id
+        -string title
+        -string description
+        -string cover_image
+        -date release_date
+        -float rating
+        -int added_by
+        -datetime created_at
+        -datetime updated_at
+        +create() bool
+        +update() bool
+        +delete() bool
+        +getTags() Tag[]
+        +getPlatforms() Platform[]
+    }
+
+    class Tag {
+        -int id
+        -string name
+        +getGames() Game[]
+    }
+
+    class Platform {
+        -int id
+        -string name
+        +getGames() Game[]
+    }
+
+    class Collection {
+        -int id
+        -int user_id
+        -int game_id
+        -int personal_rating
+        -string notes
+        -datetime added_at
+        +addGame() bool
+        +removeGame() bool
+        +rate() bool
+    }
+
+    class Session {
+        -int id
+        -string title
+        -string description
+        -datetime scheduled_at
+        -int max_players
+        -string status
+        -int organizer_id
+        -int selected_game_id
+        -datetime created_at
+        -datetime updated_at
+        +create() bool
+        +cancel() bool
+        +start() bool
+        +complete() bool
+        +getParticipants() User[]
+        +getVotes() Vote[]
+    }
+
+    class Invitation {
+        -int id
+        -int session_id
+        -int user_id
+        -string status
+        -datetime created_at
+        +send() bool
+        +accept() bool
+        +refuse() bool
+    }
+
+    class Message {
+        -int id
+        -string content
+        -int sender_id
+        -int session_id
+        -datetime created_at
+        +send() bool
+        +sanitize() string
+    }
+
+    class Vote {
+        -int id
+        -int session_id
+        -int user_id
+        -int game_id
+        -datetime created_at
+        +cast() bool
+    }
+
+    %% ─── Relations ──────────────────────────────────
+    User "1" --> "*" Collection : possède
+    User "1" --> "*" Session : organise
+    User "1" --> "*" Message : envoie
+    User "1" --> "*" Invitation : reçoit
+    User "1" --> "*" Vote : vote
+
+    Game "1" --> "*" Collection : est dans
+    Game "*" --> "*" Tag : catégorisé par
+    Game "*" --> "*" Platform : disponible sur
+    Game "1" --> "*" Vote : est voté
+
+    Session "1" --> "*" Invitation : génère
+    Session "1" --> "*" Message : contient
+    Session "1" --> "*" Vote : propose
+    Session "*" --> "0..1" Game : jeu sélectionné

@@ -1,0 +1,116 @@
+erDiagram
+    %% ═══════════════════════════════════════════════════
+    %% MLD — Modèle Logique de Données — GameVault
+    %% Dérivation du MCD en tables relationnelles
+    %% ═══════════════════════════════════════════════════
+
+    users ||--o{ collections : "user_id"
+    users ||--o{ games : "added_by"
+    users ||--o{ sessions : "organizer_id"
+    users ||--o{ messages : "sender_id"
+    users ||--o{ invitations : "user_id"
+    users ||--o{ votes : "user_id"
+
+    games ||--o{ collections : "game_id"
+    games ||--o{ game_tags : "game_id"
+    games ||--o{ game_platforms : "game_id"
+    games ||--o{ votes : "game_id"
+    games ||--o{ sessions : "selected_game_id"
+
+    tags ||--o{ game_tags : "tag_id"
+    platforms ||--o{ game_platforms : "platform_id"
+
+    sessions ||--o{ invitations : "session_id"
+    sessions ||--o{ messages : "session_id"
+    sessions ||--o{ votes : "session_id"
+
+    %% ─── Tables principales ─────────────────────────
+    users {
+        INT id PK "AUTO_INCREMENT"
+        VARCHAR_50 username UK "NOT NULL"
+        VARCHAR_100 email UK "NOT NULL"
+        VARCHAR_255 password_hash "NOT NULL"
+        VARCHAR_255 avatar "DEFAULT NULL"
+        ENUM role "user-admin, DEFAULT user"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+        TIMESTAMP updated_at "ON UPDATE CURRENT_TIMESTAMP"
+    }
+
+    games {
+        INT id PK "AUTO_INCREMENT"
+        VARCHAR_150 title "NOT NULL"
+        TEXT description "NULL"
+        VARCHAR_255 cover_image "NULL"
+        DATE release_date "NULL"
+        DECIMAL_3_1 rating "DEFAULT 0"
+        INT added_by FK "REFERENCES users(id)"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+        TIMESTAMP updated_at "ON UPDATE CURRENT_TIMESTAMP"
+    }
+
+    tags {
+        INT id PK "AUTO_INCREMENT"
+        VARCHAR_50 name UK "NOT NULL"
+    }
+
+    platforms {
+        INT id PK "AUTO_INCREMENT"
+        VARCHAR_50 name UK "NOT NULL"
+    }
+
+    sessions {
+        INT id PK "AUTO_INCREMENT"
+        VARCHAR_150 title "NOT NULL"
+        TEXT description "NULL"
+        DATETIME scheduled_at "NOT NULL"
+        INT max_players "DEFAULT 10"
+        ENUM status "planned-in_progress-completed"
+        INT organizer_id FK "REFERENCES users(id)"
+        INT selected_game_id FK "REFERENCES games(id) NULL"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+        TIMESTAMP updated_at "ON UPDATE CURRENT_TIMESTAMP"
+    }
+
+    messages {
+        INT id PK "AUTO_INCREMENT"
+        TEXT content "NOT NULL"
+        INT sender_id FK "REFERENCES users(id)"
+        INT session_id FK "REFERENCES sessions(id)"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    %% ─── Tables d'association ───────────────────────
+    collections {
+        INT id PK "AUTO_INCREMENT"
+        INT user_id FK "REFERENCES users(id)"
+        INT game_id FK "REFERENCES games(id)"
+        TINYINT personal_rating "0-10, NULL"
+        TEXT notes "NULL"
+        TIMESTAMP added_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    invitations {
+        INT id PK "AUTO_INCREMENT"
+        INT session_id FK "REFERENCES sessions(id)"
+        INT user_id FK "REFERENCES users(id)"
+        ENUM status "pending-accepted-refused"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    game_tags {
+        INT game_id PK,FK "REFERENCES games(id)"
+        INT tag_id PK,FK "REFERENCES tags(id)"
+    }
+
+    game_platforms {
+        INT game_id PK,FK "REFERENCES games(id)"
+        INT platform_id PK,FK "REFERENCES platforms(id)"
+    }
+
+    votes {
+        INT id PK "AUTO_INCREMENT"
+        INT session_id FK "REFERENCES sessions(id)"
+        INT user_id FK "REFERENCES users(id)"
+        INT game_id FK "REFERENCES games(id)"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+    }

@@ -1,0 +1,114 @@
+erDiagram
+    %% ═══════════════════════════════════════════════════
+    %% MCD — Modèle Conceptuel de Données — GameVault
+    %% ═══════════════════════════════════════════════════
+
+    USERS ||--o{ COLLECTIONS : "possède"
+    USERS ||--o{ SESSIONS : "organise"
+    USERS ||--o{ MESSAGES : "envoie"
+    USERS ||--o{ INVITATIONS : "reçoit"
+    USERS ||--o{ VOTES : "vote"
+
+    GAMES ||--o{ COLLECTIONS : "est ajouté à"
+    GAMES ||--o{ SESSIONS : "est joué dans"
+    GAMES ||--o{ GAME_TAGS : "est catégorisé par"
+    GAMES ||--o{ GAME_PLATFORMS : "est disponible sur"
+    GAMES ||--o{ VOTES : "est voté pour"
+
+    TAGS ||--o{ GAME_TAGS : "catégorise"
+    PLATFORMS ||--o{ GAME_PLATFORMS : "héberge"
+
+    SESSIONS ||--o{ INVITATIONS : "génère"
+    SESSIONS ||--o{ MESSAGES : "contient"
+    SESSIONS ||--o{ VOTES : "propose"
+
+    %% ─── Entités ────────────────────────────────────
+    USERS {
+        int id PK
+        string username UK
+        string email UK
+        string password_hash
+        string avatar
+        enum role "user | admin"
+        datetime created_at
+        datetime updated_at
+    }
+
+    GAMES {
+        int id PK
+        string title
+        text description
+        string cover_image
+        date release_date
+        float rating
+        int added_by FK
+        datetime created_at
+        datetime updated_at
+    }
+
+    TAGS {
+        int id PK
+        string name UK
+    }
+
+    PLATFORMS {
+        int id PK
+        string name UK
+    }
+
+    SESSIONS {
+        int id PK
+        string title
+        text description
+        datetime scheduled_at
+        int max_players
+        enum status "planned | in_progress | completed"
+        int organizer_id FK
+        int selected_game_id FK
+        datetime created_at
+        datetime updated_at
+    }
+
+    MESSAGES {
+        int id PK
+        text content
+        int sender_id FK
+        int session_id FK
+        datetime created_at
+    }
+
+    %% ─── Tables d'association ───────────────────────
+    COLLECTIONS {
+        int id PK
+        int user_id FK
+        int game_id FK
+        int personal_rating
+        text notes
+        datetime added_at
+    }
+
+    INVITATIONS {
+        int id PK
+        int session_id FK
+        int user_id FK
+        enum status "pending | accepted | refused"
+        datetime created_at
+    }
+
+    GAME_TAGS {
+        int game_id FK
+        int tag_id FK
+    }
+
+    GAME_PLATFORMS {
+        int game_id FK
+        int platform_id FK
+    }
+
+    VOTES {
+        int id PK
+        int session_id FK
+        int user_id FK
+        int game_id FK
+        datetime created_at
+    }
