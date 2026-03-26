@@ -20,6 +20,20 @@
     --sidebar-w: 256px;
 }
 
+/* Mode Clair */
+:root.light {
+    --background: #F3F4F6;
+    --foreground: #111827;
+    --card: #FFFFFF;
+    --card-border: rgba(139, 92, 246, 0.1);
+    --muted: #E5E7EB;
+    --muted-fg: #6B7280;
+    --sidebar-bg: #FFFFFF;
+    --sidebar-border: rgba(139, 92, 246, 0.1);
+    --sidebar-accent: #F9FAFB;
+    --border: rgba(139, 92, 246, 0.1);
+}
+
 /* ── Reset ──────────────────────────────────────────────────── */
 *,
 *::before,

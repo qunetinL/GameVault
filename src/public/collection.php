@@ -10,14 +10,16 @@ $games = [
     ['id' => '7', 'title' => 'Hades', 'genre' => 'Roguelike', 'rating' => 4.9, 'platform' => 'Switch', 'img' => '/assets/hades.jpeg', 'emoji' => '🔥'],
     ['id' => '8', 'title' => 'Spider-Man 2', 'genre' => 'Action', 'rating' => 4.7, 'platform' => 'PS5', 'img' => '/assets/spiderman2.jpeg', 'emoji' => '🕸️'],
 ];
+$genres = ['Tous les genres', 'Action', 'RPG', 'Action RPG', 'FPS', 'Action-Adventure', 'Sandbox', 'Roguelike'];
+$platforms = ['Toutes les plateformes', 'PC', 'PS5', 'PS4', 'Switch', 'Xbox', 'Multi'];
 
 $navItems = [
-    ['href' => '/',             'label' => 'Accueil',    'icon' => 'home'],
-    ['href' => '/dashboard.php','label' => 'Dashboard',  'icon' => 'dashboard'],
-    ['href' => '/collection.php','label'=> 'Collection', 'icon' => 'gamepad'],
-    ['href' => '/sessions.php', 'label' => 'Sessions',   'icon' => 'calendar'],
-    ['href' => '/chat.php',     'label' => 'Chat',       'icon' => 'message'],
-    ['href' => '/admin.php',    'label' => 'Admin',      'icon' => 'shield'],
+    ['href' => '/', 'label' => 'Accueil', 'icon' => 'home'],
+    ['href' => '/dashboard.php', 'label' => 'Dashboard', 'icon' => 'dashboard'],
+    ['href' => '/collection.php', 'label' => 'Collection', 'icon' => 'gamepad'],
+    ['href' => '/sessions.php', 'label' => 'Sessions', 'icon' => 'calendar'],
+    ['href' => '/chat.php', 'label' => 'Chat', 'icon' => 'message'],
+    ['href' => '/admin.php', 'label' => 'Admin', 'icon' => 'shield'],
 ];
 $icons = [
     'home' => '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
@@ -37,6 +39,7 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎮 Ma Collection — GameVault</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/ui-components.css">
 </head>
 
 <body>
@@ -54,21 +57,30 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             <span class="sidebar__logo-text">GameVault</span>
         </a>
         <nav class="sidebar__nav">
-            <?php foreach ($navItems as $item): 
+            <?php foreach ($navItems as $item):
                 $active = ($item['href'] === '/' ? $currentPath === '/' : strpos($currentPath, $item['href']) === 0);
-            ?>
-            <a href="<?= htmlspecialchars($item['href']) ?>"
-               class="sidebar__link<?= $active ? ' active' : '' ?>"
-               <?= $active ? 'aria-current="page"' : '' ?>>
-                <span class="sidebar__link-icon" aria-hidden="true">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <?= $icons[$item['icon']] ?>
-                    </svg>
-                </span>
-                <?= htmlspecialchars($item['label']) ?>
-            </a>
+                ?>
+                <a href="<?= htmlspecialchars($item['href']) ?>" class="sidebar__link<?= $active ? ' active' : '' ?>"
+                    <?= $active ? 'aria-current="page"' : '' ?>>
+                    <span class="sidebar__link-icon" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <?= $icons[$item['icon']] ?>
+                        </svg>
+                    </span>
+                    <?= htmlspecialchars($item['label']) ?>
+                </a>
             <?php endforeach; ?>
         </nav>
+
+        <button id="theme-toggle" class="theme-toggle" title="Changer de thème">
+            <svg class="theme-toggle__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+            <span>Thème</span>
+        </button>
+
         <div class="sidebar__user">
             <div class="sidebar__user-card">
                 <div class="sidebar__avatar">PG</div>
@@ -99,18 +111,19 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     </header>
 
     <nav id="mobile-nav" class="mobile-nav" aria-label="Menu mobile">
-        <?php foreach ($navItems as $item): 
+        <?php foreach ($navItems as $item):
             $active = ($item['href'] === '/' ? $currentPath === '/' : strpos($currentPath, $item['href']) === 0);
-        ?>
-        <a href="<?= htmlspecialchars($item['href']) ?>"
-           class="<?= $active ? 'active' : '' ?>">
-            <span class="mobile-nav__icon" aria-hidden="true" style="width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <?= $icons[$item['icon']] ?>
-                </svg>
-            </span>
-            <?= htmlspecialchars($item['label']) ?>
-        </a>
+            ?>
+            <a href="<?= htmlspecialchars($item['href']) ?>" class="<?= $active ? 'active' : '' ?>">
+                <span class="mobile-nav__icon" aria-hidden="true"
+                    style="width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <?= $icons[$item['icon']] ?>
+                    </svg>
+                </span>
+                <?= htmlspecialchars($item['label']) ?>
+            </a>
         <?php endforeach; ?>
     </nav>
 
@@ -135,10 +148,10 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                         <circle cx="11" cy="11" r="8" />
                         <line x1="21" y1="21" x2="16.65" y2="16.65" />
                     </svg>
-                    <input type="text" class="form-input" placeholder="Rechercher un jeu...">
+                    <input type="text" id="search-games" class="form-input" placeholder="Rechercher un jeu...">
                 </div>
 
-                <select class="filter-select">
+                <select id="filter-genre" class="filter-select">
                     <?php foreach ($genres as $g): ?>
                         <option>
                             <?= $g ?>
@@ -153,10 +166,16 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
                         </option>
                     <?php endforeach; ?>
                 </select>
+
+                <select id="sort-games" class="filter-select">
+                    <option value="default">Trier par...</option>
+                    <option value="name">Nom (A-Z)</option>
+                    <option value="rating">Note (Haute)</option>
+                </select>
             </div>
 
             <!-- Collection Grid -->
-            <div class="games-grid">
+            <div class="games-grid" id="games-grid">
                 <?php foreach ($games as $game): ?>
                     <article class="game-card">
                         <a href="/game.php?id=<?= $game['id'] ?>" style="display:contents">
@@ -195,6 +214,8 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     </div>
 
     <script src="/js/main.js"></script>
+    <script src="/js/ui.js"></script>
+    <script src="/js/games.js"></script>
 </body>
 
 </html>

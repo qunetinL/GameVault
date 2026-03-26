@@ -34,7 +34,7 @@
                 <p class="auth-subtitle">Rejoignez la communauté et gérez votre collection.</p>
             </header>
 
-            <form action="/login.php" method="POST" class="auth-form">
+            <form action="/login.php" method="POST" class="auth-form" id="signup-form">
 
                 <div class="form-group">
                     <label for="username" class="form-label">Nom d'utilisateur</label>
@@ -75,6 +75,7 @@
         </div>
     </main>
 
+    <script src="/js/validation.js"></script>
 </body>
 
 </html>

@@ -125,6 +125,10 @@
     width: 100%;
 }
 
+#password-strength {
+    transition: all 0.3s ease;
+}
+
 @media (max-width: 480px) {
     .auth-card {
         padding: 1.5rem;
