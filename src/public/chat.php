@@ -1,9 +1,27 @@
 <?php
-// Simulation de contacts
+require_once __DIR__ . '/../app/Helpers/DbHelper.php';
+session_start();
+
+$db = DbHelper::getInstance()->getConnection();
+
+// Simulation d'utilisateur (pour la démo)
+$currentUser = [
+    'id' => $_GET['user_id'] ?? 1,
+    'username' => ($_GET['user_id'] ?? 1) == 1 ? 'AlexGamer' : 'SarahStream'
+];
+
+$session_id = $_GET['session_id'] ?? 1;
+
+// Récupérer les infos de la session
+$stmt = $db->prepare("SELECT * FROM sessions WHERE id = ?");
+$stmt->execute([$session_id]);
+$session = $stmt->fetch();
+
+// Simulation de contacts (on pourrait les tirer de la DB aussi)
 $contacts = [
-    ['id' => 1, 'name' => 'SoulsMaster', 'last_msg' => 'On se fait une session demain ?', 'time' => '10:30', 'online' => true],
-    ['id' => 2, 'name' => 'SoloPlayer', 'last_msg' => 'Merci pour le coup de main !', 'time' => 'Hier', 'online' => false],
-    ['id' => 3, 'name' => 'NightWanderer', 'last_msg' => 'Ton build Elden Ring est top.', 'time' => 'Lun.', 'online' => true],
+    ['id' => 1, 'name' => 'AlexGamer', 'last_msg' => 'Prêt pour demain ?', 'time' => '10:30', 'online' => true],
+    ['id' => 2, 'name' => 'SarahStream', 'last_msg' => 'Carrément !', 'time' => 'Hier', 'online' => true],
+    ['id' => 3, 'name' => 'AdminVault', 'last_msg' => 'Bienvenue sur GameVault', 'time' => 'Lun.', 'online' => true],
 ];
 
 // Navigation
@@ -34,6 +52,90 @@ $currentPath = "/chat.php";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messagerie — GameVault</title>
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Styles pour le vote */
+        .vote-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .vote-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .vote-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .vote-option {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .vote-option:hover {
+            background: rgba(var(--primary-rgb), 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .vote-option.selected {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .vote-count {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .typing-indicator {
+            font-size: 0.8rem;
+            font-style: italic;
+            color: var(--primary-color);
+            height: 20px;
+            margin-bottom: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .typing-indicator.active {
+            opacity: 1;
+        }
+
+        /* Animation des messages */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-bubble {
+            animation: slideIn 0.3s ease-out forwards;
+        }
+    </style>
 </head>
 
 <body class="body-fixed">
@@ -75,24 +177,33 @@ $currentPath = "/chat.php";
     </header>
 
     <div class="main-content chat-page-wrapper">
-        <div class="chat-app">
+        <div class="chat-app" data-user-id="<?= $currentUser['id'] ?>" data-session-id="<?= $session_id ?>"
+            data-username="<?= htmlspecialchars($currentUser['username']) ?>">
 
-            <!-- Sidebar Contacts -->
+            <!-- Sidebar Contacts & Voting -->
             <aside class="chat-sidebar">
                 <div class="chat-sidebar__header">
-                    <h2>Messages</h2>
-                    <button class="btn-icon" title="Nouveau message">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                        </svg>
-                    </button>
+                    <h2>Session Info</h2>
+                </div>
+
+                <div style="padding: 10px 20px;">
+                    <div class="vote-panel">
+                        <div class="vote-title">
+                            <span>🗳️ Vote pour le jeu</span>
+                        </div>
+                        <div class="vote-options" id="vote-options">
+                            <!-- Dynamically loaded -->
+                            <p style="font-size: 0.8rem; opacity: 0.5;">Chargement des votes...</p>
+                        </div>
+                    </div>
+
+                    <h3>Contacts</h3>
                 </div>
 
                 <div class="chat-contacts">
                     <?php foreach ($contacts as $contact): ?>
-                        <button class="contact-item <?= $contact['id'] == 1 ? 'active' : '' ?>">
+                        <button
+                            class="contact-item <?= $contact['id'] == ($currentUser['id'] == 1 ? 2 : 1) ? 'active' : '' ?>">
                             <div class="contact-avatar">
                                 <span class="avatar-init">
                                     <?= substr($contact['name'], 0, 1) ?>
@@ -124,64 +235,41 @@ $currentPath = "/chat.php";
                     <div class="chat-header__user">
                         <div class="avatar--sm"></div>
                         <div>
-                            <h3>SoulsMaster</h3>
-                            <span class="status-text">En ligne</span>
+                            <h3><?= htmlspecialchars($session['title'] ?? 'Session Chat') ?></h3>
+                            <span class="status-text">En ligne • <span id="participant-count">2</span>
+                                participants</span>
                         </div>
-                    </div>
-                    <div class="chat-header__actions">
-                        <button class="btn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <path
-                                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                            </svg></button>
-                        <button class="btn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="1" />
-                                <circle cx="12" cy="5" r="1" />
-                                <circle cx="12" cy="19" r="1" />
-                            </svg></button>
                     </div>
                 </header>
 
-                <div class="chat-messages">
-                    <div class="message-bubble recipient">
-                        <p>Salut ! Tu as vu pour la session de demain ?</p>
-                        <span class="message-time">10:15</span>
-                    </div>
-                    <div class="message-bubble sender">
-                        <p>Oui j'ai vu ! Je serai là à l'heure.</p>
-                        <span class="message-time">10:20</span>
-                    </div>
-                    <div class="message-bubble recipient">
-                        <p>Super, on se fait une session Elden Ring ?</p>
-                        <span class="message-time">10:22</span>
-                    </div>
-                    <div class="message-bubble sender">
-                        <p>On se fait une session demain ?</p>
-                        <span class="message-time">10:30</span>
-                    </div>
+                <div class="chat-messages" id="chat-messages">
+                    <!-- Messages will be loaded here -->
                 </div>
 
-                <footer class="chat-input-area">
-                    <button class="btn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2">
-                            <path
-                                d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
-                        </svg></button>
-                    <input type="text" class="chat-input" placeholder="Écrivez votre message...">
-                    <button class="btn btn--primary btn--icon-only">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <line x1="22" y1="2" x2="11" y2="13" />
-                            <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                        </svg>
-                    </button>
-                </footer>
+                <div class="chat-footer-wrap">
+                    <div class="typing-indicator" id="typing-indicator">Quelqu'un écrit...</div>
+                    <footer class="chat-input-area">
+                        <button class="btn-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
+                            </svg></button>
+                        <input type="text" class="chat-input" id="chat-input" placeholder="Écrivez votre message...">
+                        <button class="btn btn--primary btn--icon-only" id="send-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13" />
+                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                            </svg>
+                        </button>
+                    </footer>
+                </div>
             </main>
         </div>
     </div>
 
     <script src="/js/main.js"></script>
+    <script src="/js/chat.js"></script>
 </body>
 
 </html>
