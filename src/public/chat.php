@@ -52,90 +52,6 @@ $currentPath = "/chat.php";
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messagerie — GameVault</title>
     <link rel="stylesheet" href="/css/style.css">
-    <style>
-        /* Styles pour le vote */
-        .vote-panel {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .vote-title {
-            font-size: 0.9rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .vote-options {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .vote-option {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .vote-option:hover {
-            background: rgba(var(--primary-rgb), 0.1);
-            border-color: var(--primary-color);
-        }
-
-        .vote-option.selected {
-            background: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-
-        .vote-count {
-            font-size: 0.8rem;
-            opacity: 0.7;
-        }
-
-        .typing-indicator {
-            font-size: 0.8rem;
-            font-style: italic;
-            color: var(--primary-color);
-            height: 20px;
-            margin-bottom: 5px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .typing-indicator.active {
-            opacity: 1;
-        }
-
-        /* Animation des messages */
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message-bubble {
-            animation: slideIn 0.3s ease-out forwards;
-        }
-    </style>
 </head>
 
 <body class="body-fixed">
@@ -269,7 +185,7 @@ $currentPath = "/chat.php";
     </div>
 
     <script src="/js/main.js"></script>
-    <script src="/js/chat.js"></script>
+    <script src="js/chat.js?v=2"></script>
 </body>
 
 </html>
