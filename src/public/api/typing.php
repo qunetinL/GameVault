@@ -1,9 +1,15 @@
 <?php
+
 // Simple simulation of typing indicator
 // In a real app, this would use Redis or a temp table in SQL
-session_start();
+
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use App\Helpers\DbHelper;
+
 header('Content-Type: application/json');
 
+$db = DbHelper::getInstance()->getConnection();
 $session_id = $_GET['session_id'] ?? null;
 $user_id = $_GET['user_id'] ?? 1;
 $is_typing = $_GET['typing'] ?? null;

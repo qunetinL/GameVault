@@ -1,0 +1,19 @@
+{
+    "name": "qunetinl/gamevault",
+    "description": "GameVault - Back-end MVC",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "QuentinL",
+            "email": "quentin@example.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.5"
+    }
+}

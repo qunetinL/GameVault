@@ -1,5 +1,8 @@
 <?php
-require_once __DIR__ . '/../../app/Helpers/DbHelper.php';
+
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use App\Helpers\DbHelper;
 
 header('Content-Type: application/json');
 
@@ -17,13 +20,13 @@ if ($method === 'GET') {
 
     // Récupérer les votes groupés par jeu
     $stmt = $db->prepare("
-        SELECT g.id as game_id, g.title, COUNT(v.id) as vote_count 
-        FROM games g
-        LEFT JOIN votes v ON g.id = v.game_id AND v.session_id = ?
-        WHERE g.id IN (SELECT game_id FROM collections WHERE user_id IN (SELECT organizer_id FROM sessions WHERE id = ?))
-           OR g.id IN (SELECT selected_game_id FROM sessions WHERE id = ?)
-        GROUP BY g.id, g.title
-    ");
+SELECT g.id as game_id, g.title, COUNT(v.id) as vote_count
+FROM games g
+LEFT JOIN votes v ON g.id = v.game_id AND v.session_id = ?
+WHERE g.id IN (SELECT game_id FROM collections WHERE user_id IN (SELECT organizer_id FROM sessions WHERE id = ?))
+OR g.id IN (SELECT selected_game_id FROM sessions WHERE id = ?)
+GROUP BY g.id, g.title
+");
     $stmt->execute([$session_id, $session_id, $session_id]);
     $votes = $stmt->fetchAll();
 

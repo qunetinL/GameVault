@@ -1,5 +1,8 @@
 <?php
-require_once __DIR__ . '/../../app/Helpers/DbHelper.php';
+
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use App\Helpers\DbHelper;
 
 header('Content-Type: application/json');
 
@@ -17,12 +20,12 @@ if ($method === 'GET') {
     }
 
     $stmt = $db->prepare("
-        SELECT m.*, u.username, u.avatar 
-        FROM messages m
-        JOIN users u ON m.sender_id = u.id
-        WHERE m.session_id = ? AND m.id > ?
-        ORDER BY m.created_at ASC
-    ");
+SELECT m.*, u.username, u.avatar
+FROM messages m
+JOIN users u ON m.sender_id = u.id
+WHERE m.session_id = ? AND m.id > ?
+ORDER BY m.created_at ASC
+");
     $stmt->execute([$session_id, $last_id]);
     $messages = $stmt->fetchAll();
 

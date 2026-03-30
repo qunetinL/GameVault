@@ -1,5 +1,13 @@
 <?php
+
+
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use App\Helpers\DbHelper;
+
 header('Content-Type: application/json');
+
+$db = DbHelper::getInstance()->getConnection();
 
 // Simulation de base de données de jeux
 $allGames = [

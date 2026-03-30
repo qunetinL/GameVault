@@ -1,6 +1,6 @@
 <?php
 /**
- * GameVault — Register Page
+ * GameVault — Register View
  */
 ?>
 <!DOCTYPE html>
@@ -34,7 +34,15 @@
                 <p class="auth-subtitle">Rejoignez la communauté et gérez votre collection.</p>
             </header>
 
-            <form action="/login.php" method="POST" class="auth-form" id="signup-form">
+            <?php if (isset($error)): ?>
+                <div class="alert alert--error" style="margin-bottom: 1rem; color: #ff5555;">
+                    <?= htmlspecialchars($error) ?>
+                </div>
+            <?php endif; ?>
+
+            <form action="/register" method="POST" class="auth-form" id="signup-form">
+                <!-- CSRF Token -->
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 
                 <div class="form-group">
                     <label for="username" class="form-label">Nom d'utilisateur</label>
@@ -69,7 +77,7 @@
             </form>
 
             <footer class="form-footer">
-                Déjà inscrit ? <a href="/login.php">Se connecter</a>
+                Déjà inscrit ? <a href="/login">Se connecter</a>
             </footer>
 
         </div>

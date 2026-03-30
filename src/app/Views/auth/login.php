@@ -1,6 +1,6 @@
 <?php
 /**
- * GameVault — Login Page 
+ * GameVault — Login View
  */
 ?>
 <!DOCTYPE html>
@@ -34,7 +34,15 @@
                 <p class="auth-subtitle">Entrez vos identifiants pour accéder à votre voûte.</p>
             </header>
 
-            <form action="/dashboard.php" method="POST" class="auth-form">
+            <?php if (isset($error)): ?>
+                <div class="alert alert--error" style="margin-bottom: 1rem; color: #ff5555;">
+                    <?= htmlspecialchars($error) ?>
+                </div>
+            <?php endif; ?>
+
+            <form action="/login" method="POST" class="auth-form">
+                <!-- CSRF Token -->
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 
                 <div class="form-group">
                     <label for="email" class="form-label">Adresse Email</label>
@@ -45,10 +53,15 @@
                 <div class="form-group">
                     <div style="display:flex; justify-content:space-between; align-items:center">
                         <label for="password" class="form-label">Mot de passe</label>
-                        <a href="/forgot-password.php" class="forgot-link">Oublié ?</a>
+                        <a href="/forgot-password" class="forgot-link">Oublié ?</a>
                     </div>
                     <input type="password" id="password" name="password" class="form-input" placeholder="••••••••"
                         required>
+                </div>
+
+                <div class="form-group" style="display:flex; align-items:center; gap:0.5rem; margin-top:0.5rem">
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember" class="form-label" style="font-size: 0.875rem;">Se souvenir de moi</label>
                 </div>
 
                 <button type="submit" class="btn btn--primary w-full" style="margin-top:1rem">
@@ -58,7 +71,7 @@
             </form>
 
             <footer class="form-footer">
-                Pas encore de compte ? <a href="/register.php">Créer un profil</a>
+                Pas encore de compte ? <a href="/register">Créer un profil</a>
             </footer>
 
         </div>
