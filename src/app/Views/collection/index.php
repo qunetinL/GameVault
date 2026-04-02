@@ -5,7 +5,7 @@
             <p>Gérez vos jeux favoris et suivez votre progression.</p>
         </div>
         <div class="header-actions">
-            <button class="btn btn--primary">Ajouter un jeu</button>
+            <a href="/game/add" class="btn btn--primary">Ajouter un jeu</a>
         </div>
     </header>
 
@@ -49,7 +49,18 @@
             <article class="game-card">
                 <a href="/game?id=<?= $game['id'] ?>" style="display:contents">
                     <div class="game-card__cover">
-                        <img src="<?= $game['cover_image'] ?>" alt="<?= $game['title'] ?>" loading="lazy"
+                        <form action="/game/toggle?id=<?= $game['id'] ?>" method="POST" class="game-card__remove-form">
+                            <button type="submit" class="game-card__remove" title="Retirer de ma collection">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M18 6 6 18" />
+                                    <path d="m6 6 12 12" />
+                                </svg>
+                            </button>
+                        </form>
+                        <img src="<?= $game['cover_image'] ?? '/img/placeholder.png' ?>" alt="<?= $game['title'] ?>"
+                            loading="lazy"
                             onerror="this.style.display='none';this.closest('.game-card__cover').textContent='🎮';">
                         <div class="game-card__rating-badge">
                             <svg viewBox="0 0 24 24">
@@ -64,8 +75,8 @@
                             <?= htmlspecialchars($game['title']) ?>
                         </h3>
                         <p class="game-card__genre">
-                            <?= htmlspecialchars($game['genre']) ?> •
-                            <?= htmlspecialchars($game['platform']) ?>
+                            <?= htmlspecialchars($game['tags'] ?? 'Sans étiquette') ?> •
+                            <?= htmlspecialchars($game['platforms'] ?? 'Multi') ?>
                         </p>
                     </div>
                 </a>

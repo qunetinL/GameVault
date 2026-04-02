@@ -25,7 +25,14 @@ $router->get('/collection', 'CollectionController@index', [\App\Middleware\AuthM
 $router->get('/sessions', 'SessionsController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/admin', 'AdminController@index', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
 $router->get('/dashboard', 'DashboardController@index', [\App\Middleware\AuthMiddleware::class]);
-$router->get('/game', 'GameController@index', [\App\Middleware\AuthMiddleware::class]);
+$router->get('/games', 'GameController@index', [\App\Middleware\AuthMiddleware::class]);
+$router->get('/game', 'GameController@show', [\App\Middleware\AuthMiddleware::class]);
+$router->get('/game/add', 'GameController@create', [\App\Middleware\AuthMiddleware::class]);
+$router->post('/game/add', 'GameController@store', [\App\Middleware\AuthMiddleware::class]);
+$router->get('/game/edit', 'GameController@edit', [\App\Middleware\AuthMiddleware::class]);
+$router->post('/game/edit', 'GameController@update', [\App\Middleware\AuthMiddleware::class]);
+$router->post('/game/delete', 'GameController@delete', [\App\Middleware\AuthMiddleware::class]);
+$router->post('/game/toggle', 'GameController@toggleCollection', [\App\Middleware\AuthMiddleware::class]);
 
 $app = new App($router);
 $app->run();
