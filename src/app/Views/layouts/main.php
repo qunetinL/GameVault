@@ -65,10 +65,25 @@
         </nav>
 
         <div class="sidebar__user">
-            <div class="sidebar__user-card">
-                <div class="sidebar__avatar">PG</div>
-                <div class="sidebar__user-name">ProGamer123</div>
-            </div>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <div class="sidebar__user-card">
+                    <div class="sidebar__avatar">
+                        <?= strtoupper(substr($_SESSION['user_name'] ?? 'U', 0, 2)) ?>
+                    </div>
+                    <div class="sidebar__user-info" style="flex-grow: 1; min-width: 0;">
+                        <div class="sidebar__user-name"
+                            style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <?= htmlspecialchars($_SESSION['user_name'] ?? 'Utilisateur') ?>
+                        </div>
+                        <a href="/logout" class="sidebar__logout"
+                            style="font-size: 0.75rem; color: var(--primary); text-decoration: none; display: block; margin-top: 2px;">
+                            Se déconnecter
+                        </a>
+                    </div>
+                </div>
+            <?php else: ?>
+                <a href="/login" class="btn btn--primary" style="width: 100%;">Se connecter</a>
+            <?php endif; ?>
         </div>
     </aside>
 

@@ -151,6 +151,11 @@
     color: #10B981;
 }
 
+.sidebar__logout:hover {
+    color: var(--secondary) !important;
+    text-decoration: underline !important;
+}
+
 /* ── Header mobile ──────────────────────────────────────────── */
 .mobile-header {
     display: none;

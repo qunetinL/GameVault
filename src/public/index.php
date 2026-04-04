@@ -23,6 +23,13 @@ $router->get('/logout', 'AuthController@logout');
 $router->get('/chat', 'ChatController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/collection', 'CollectionController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/sessions', 'SessionsController@index', [\App\Middleware\AuthMiddleware::class]);
+$router->get('/session/create', 'SessionsController@create', [\App\Middleware\AuthMiddleware::class]);
+$router->post('/session/create', 'SessionsController@store', [\App\Middleware\AuthMiddleware::class]);
+$router->get('/session/show', 'SessionsController@show', [\App\Middleware\AuthMiddleware::class]);
+$router->post('/session/invite', 'SessionsController@invite', [\App\Middleware\AuthMiddleware::class]);
+$router->post('/session/respond', 'SessionsController@respond', [\App\Middleware\AuthMiddleware::class]);
+$router->post('/session/vote', 'SessionsController@vote', [\App\Middleware\AuthMiddleware::class]);
+
 $router->get('/admin', 'AdminController@index', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
 $router->get('/dashboard', 'DashboardController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/games', 'GameController@index', [\App\Middleware\AuthMiddleware::class]);
