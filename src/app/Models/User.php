@@ -30,4 +30,26 @@ class User extends Model
 
         return $this->query($sql, $params);
     }
+
+    public function getStats($userId)
+    {
+        $stats = [];
+
+        // Games in personal collection
+        $stats['collection_count'] = $this->query("SELECT COUNT(*) FROM collections WHERE user_id = ?", [$userId])->fetchColumn();
+
+        // Games added to the global catalogue by this user
+        $stats['contributions_count'] = $this->query("SELECT COUNT(*) FROM games WHERE added_by = ?", [$userId])->fetchColumn();
+
+        // Total sessions organized
+        $stats['sessions_count'] = $this->query("SELECT COUNT(*) FROM sessions WHERE organizer_id = ?", [$userId])->fetchColumn();
+
+        // Total messages sent
+        $stats['messages_count'] = $this->query("SELECT COUNT(*) FROM messages WHERE sender_id = ?", [$userId])->fetchColumn();
+
+        // Total invitations received
+        $stats['invitations_count'] = $this->query("SELECT COUNT(*) FROM invitations WHERE user_id = ?", [$userId])->fetchColumn();
+
+        return $stats;
+    }
 }

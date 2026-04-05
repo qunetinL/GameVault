@@ -30,6 +30,17 @@ $router->post('/session/invite', 'SessionsController@invite', [\App\Middleware\A
 $router->post('/session/respond', 'SessionsController@respond', [\App\Middleware\AuthMiddleware::class]);
 $router->post('/session/vote', 'SessionsController@vote', [\App\Middleware\AuthMiddleware::class]);
 
+// API Endpoints
+$router->get('/api/games', 'ApiController@getGames');
+$router->get('/api/games/search', 'ApiController@searchGames');
+$router->get('/api/games/:id', 'ApiController@getGame');
+$router->post('/api/games', 'ApiController@createGame');
+$router->put('/api/games/:id', 'ApiController@updateGame');
+$router->delete('/api/games/:id', 'ApiController@deleteGame');
+$router->get('/api/sessions', 'ApiController@getSessions');
+$router->post('/api/messages', 'ApiController@sendMessage');
+$router->get('/api/stats', 'ApiController@getStats');
+
 $router->get('/admin', 'AdminController@index', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
 $router->get('/dashboard', 'DashboardController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/games', 'GameController@index', [\App\Middleware\AuthMiddleware::class]);
