@@ -95,7 +95,16 @@ class ApiController extends Controller
     public function searchGames()
     {
         $query = $_GET['q'] ?? '';
-        $games = $this->gameModel->search($query);
+        $cacheKey = "search:" . md5($query);
+        $redis = \App\Helpers\RedisHelper::getInstance();
+
+        $games = $redis->getCache($cacheKey);
+
+        if ($games === null) {
+            $games = $this->gameModel->search($query);
+            $redis->setCache($cacheKey, $games, 300); // 5 min cache
+        }
+
         $this->json($games);
     }
 

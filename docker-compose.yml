@@ -51,6 +51,13 @@ services:
     networks:
       - gamevault-network
 
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - gamevault-network
+
 networks:
   gamevault-network:
     driver: bridge

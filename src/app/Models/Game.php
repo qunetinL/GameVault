@@ -6,17 +6,21 @@ use App\Core\Model;
 
 class Game extends Model
 {
-    public function findAll()
+    public function findAll($limit = null, $offset = 0)
     {
-        return $this->query(
-            "SELECT g.*, GROUP_CONCAT(t.name) as tags, u.username as added_by_name
+        $sql = "SELECT g.*, GROUP_CONCAT(t.name) as tags, u.username as added_by_name
              FROM games g 
              LEFT JOIN game_tags gt ON g.id = gt.game_id 
              LEFT JOIN tags t ON gt.tag_id = t.id 
              LEFT JOIN users u ON g.added_by = u.id
              GROUP BY g.id 
-             ORDER BY g.created_at DESC"
-        )->fetchAll();
+             ORDER BY g.created_at DESC";
+
+        if ($limit !== null) {
+            $sql .= " LIMIT " . (int) $limit . " OFFSET " . (int) $offset;
+        }
+
+        return $this->query($sql)->fetchAll();
     }
 
     public function find($id)

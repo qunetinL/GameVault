@@ -41,6 +41,8 @@ $router->get('/api/sessions', 'ApiController@getSessions');
 $router->post('/api/messages', 'ApiController@sendMessage');
 $router->get('/api/stats', 'ApiController@getStats');
 
+$router->get('/stats', 'StatsController@index', [\App\Middleware\AuthMiddleware::class]);
+
 $router->get('/admin', 'AdminController@index', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
 $router->get('/dashboard', 'DashboardController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/games', 'GameController@index', [\App\Middleware\AuthMiddleware::class]);
