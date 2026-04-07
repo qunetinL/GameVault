@@ -62,6 +62,9 @@
                         </svg>
                     </span>
                     <?= htmlspecialchars($item['label']) ?>
+                    <?php if ($item['icon'] === 'message'): ?>
+                        <span id="unread-badge" class="sidebar__badge" style="display: none;">0</span>
+                    <?php endif; ?>
                 </a>
             <?php endforeach; ?>
         </nav>

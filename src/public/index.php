@@ -38,6 +38,7 @@ $router->post('/api/games', 'ApiController@createGame');
 $router->put('/api/games/:id', 'ApiController@updateGame');
 $router->delete('/api/games/:id', 'ApiController@deleteGame');
 $router->get('/api/sessions', 'ApiController@getSessions');
+$router->get('/api/messages/:id', 'ApiController@getNewMessages');
 $router->post('/api/messages', 'ApiController@sendMessage');
 $router->get('/api/stats', 'ApiController@getStats');
 

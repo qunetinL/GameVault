@@ -128,11 +128,22 @@ class ApiController extends Controller
         $data = [
             'session_id' => $input['session_id'],
             'sender_id' => $_SESSION['user_id'],
-            'content' => $input['content']
+            'content' => htmlspecialchars($input['content'], ENT_QUOTES, 'UTF-8')
         ];
 
         $this->messageModel->create($data);
         $this->json(['message' => 'Message sent'], 201);
+    }
+
+    public function getNewMessages($sessionId)
+    {
+        $lastId = $_GET['last_id'] ?? 0;
+
+        // Mark as read when fetching for a session
+        $this->messageModel->markAsRead($sessionId, $_SESSION['user_id']);
+
+        $messages = $this->messageModel->getNewMessages($sessionId, $lastId);
+        $this->json($messages);
     }
 
     // --- STATS ---
@@ -140,6 +151,7 @@ class ApiController extends Controller
     public function getStats()
     {
         $stats = $this->userModel->getStats($_SESSION['user_id']);
+        $stats['unread_messages'] = $this->messageModel->getUnreadCount($_SESSION['user_id']);
         $this->json($stats);
     }
 }

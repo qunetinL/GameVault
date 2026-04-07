@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fetchMessages = async () => {
         try {
-            const response = await fetch(`/api/messages.php?session_id=${sessionId}&last_id=${lastMessageId}`);
+            const response = await fetch(`/api/messages/${sessionId}?last_id=${lastMessageId}`);
             if (!response.ok) return;
             const messages = await response.json();
 
@@ -50,9 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         msgDiv.innerHTML = `
             ${!isMe ? `<span style="font-size: 0.7rem; display: block; opacity: 0.7; margin-bottom: 2px;">${msg.username}</span>` : ''}
-            <p>${msg.content}</p>
+            <p></p>
             <span class="message-time">${time}</span>
         `;
+        msgDiv.querySelector('p').textContent = msg.content;
         chatMessages.appendChild(msgDiv);
     };
 
@@ -64,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         stopTyping();
 
         try {
-            const response = await fetch('/api/messages.php', {
+            const response = await fetch('/api/messages', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
