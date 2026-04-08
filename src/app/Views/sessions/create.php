@@ -8,6 +8,7 @@
 
     <div class="card" style="max-width: 600px; margin: 2rem auto; padding: 2rem;">
         <form action="/session/create" method="POST">
+            <?php \App\Helpers\CsrfHelper::insertField(); ?>
             <div class="form-group" style="margin-bottom: 1.5rem;">
                 <label for="title" style="display:block; margin-bottom: 0.5rem; font-weight: 500;">Titre de la
                     session</label>

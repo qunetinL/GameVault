@@ -109,4 +109,14 @@ class RedisHelper
         }
         return null;
     }
+
+    /**
+     * Simple Cache Delete
+     */
+    public function deleteCache($key)
+    {
+        if ($this->redis) {
+            $this->redis->del($key);
+        }
+    }
 }

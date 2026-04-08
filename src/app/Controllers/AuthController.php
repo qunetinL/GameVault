@@ -38,9 +38,32 @@ class AuthController extends Controller
         $password = $_POST['password'] ?? '';
         $remember = isset($_POST['remember']);
 
+        // Brute-force protection
+        $redis = \App\Helpers\RedisHelper::getInstance();
+        $attemptsKey = "login_attempts:" . md5($email);
+        $attempts = $redis->getCache($attemptsKey) ?? 0;
+
+        if ($attempts >= 5) {
+            return $this->render('auth/login', [
+                'title' => 'Connexion — GameVault',
+                'error' => 'Trop de tentatives. Veuillez réessayer dans 15 minutes.'
+            ], false);
+        }
+
         $user = $this->userModel->findByEmail($email);
 
+        // Multi-layered login verification
+        if ($user && $user['status'] === 'banned') {
+            return $this->render('auth/login', [
+                'title' => 'Connexion — GameVault',
+                'error' => 'Votre compte a été banni par un administrateur.'
+            ], false);
+        }
+
         if ($user && password_verify($password, $user['password_hash'])) {
+            // Reset attempts on success
+            $redis->deleteCache($attemptsKey);
+
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['username'];
             $_SESSION['user_role'] = $user['role'];
@@ -54,6 +77,9 @@ class AuthController extends Controller
             header('Location: /dashboard');
             exit;
         }
+
+        // Increment attempts on failure
+        $redis->setCache($attemptsKey, $attempts + 1, 900); // 15 min lockout
 
         return $this->render('auth/login', [
             'title' => 'Connexion — GameVault',

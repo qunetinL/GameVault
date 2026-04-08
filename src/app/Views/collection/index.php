@@ -50,6 +50,7 @@
                 <a href="/game?id=<?= $game['id'] ?>" style="display:contents">
                     <div class="game-card__cover">
                         <form action="/game/toggle?id=<?= $game['id'] ?>" method="POST" class="game-card__remove-form">
+                            <?php \App\Helpers\CsrfHelper::insertField(); ?>
                             <button type="submit" class="game-card__remove" title="Retirer de ma collection">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"

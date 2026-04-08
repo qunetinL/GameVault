@@ -11,6 +11,7 @@
         </div>
         <div class="header-actions">
             <form action="/game/toggle?id=<?= $game['id'] ?>" method="POST">
+                <?php \App\Helpers\CsrfHelper::insertField(); ?>
                 <button type="submit" class="btn <?= $inCollection ? 'btn--secondary' : 'btn--primary' ?>">
                     <?= $inCollection ? 'Retirer de ma collection' : 'Ajouter à ma collection' ?>
                 </button>
@@ -54,6 +55,7 @@
             <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
                 <form action="/game/delete?id=<?= $game['id'] ?>" method="POST"
                     onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce jeu du catalogue ?');">
+                    <?php \App\Helpers\CsrfHelper::insertField(); ?>
                     <button type="submit"
                         style="background:none; border:none; color:#e74c3c; cursor:pointer; text-decoration: underline;">Supprimer
                         ce jeu du catalogue</button>

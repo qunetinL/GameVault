@@ -52,4 +52,28 @@ class User extends Model
 
         return $stats;
     }
+    public function findAll()
+    {
+        return $this->query("SELECT id, username, email, role, status, created_at FROM users ORDER BY created_at DESC")->fetchAll();
+    }
+
+    public function updateStatus($id, $status)
+    {
+        return $this->query("UPDATE users SET status = ? WHERE id = ?", [$status, $id]);
+    }
+
+    public function updateRole($id, $role)
+    {
+        return $this->query("UPDATE users SET role = ? WHERE id = ?", [$role, $id]);
+    }
+
+    public function getGlobalStats()
+    {
+        return [
+            'total_users' => $this->query("SELECT COUNT(*) FROM users")->fetchColumn(),
+            'total_games' => $this->query("SELECT COUNT(*) FROM games")->fetchColumn(),
+            'total_sessions' => $this->query("SELECT COUNT(*) FROM sessions")->fetchColumn(),
+            'pending_games' => $this->query("SELECT COUNT(*) FROM games WHERE status = 'pending'")->fetchColumn(),
+        ];
+    }
 }

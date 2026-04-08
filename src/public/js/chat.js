@@ -71,7 +71,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     session_id: sessionId,
                     sender_id: userId,
-                    content: content
+                    content: content,
+                    csrf_token: document.querySelector('input[name="csrf_token"]')?.value || ''
                 })
             });
             // Le message sera récupéré par le prochain poll

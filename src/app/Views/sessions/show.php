@@ -64,6 +64,7 @@
 
                     <form action="/session/vote" method="POST"
                         style="background: rgba(255,255,255,0.02); padding: 1.5rem; border-radius: 0.5rem; border: 1px dashed var(--border);">
+                        <?php \App\Helpers\CsrfHelper::insertField(); ?>
                         <input type="hidden" name="session_id" value="<?= $session['id'] ?>">
                         <label style="display: block; margin-bottom: 0.75rem; font-weight: 500;">Voter pour un jeu :</label>
                         <div style="display: flex; gap: 0.5rem;">
@@ -110,6 +111,7 @@
                 <?php if ($session['organizer_id'] === $_SESSION['user_id']): ?>
                     <hr style="margin: 1.5rem 0; opacity: 0.1;">
                     <form action="/session/invite" method="POST">
+                        <?php \App\Helpers\CsrfHelper::insertField(); ?>
                         <input type="hidden" name="session_id" value="<?= $session['id'] ?>">
                         <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: 500;">Inviter
                             un joueur :</label>
@@ -133,12 +135,14 @@
                     <h3 style="margin-bottom: 1rem; color: var(--primary);">Invitation reçue !</h3>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
                         <form action="/session/respond" method="POST">
+                            <?php \App\Helpers\CsrfHelper::insertField(); ?>
                             <input type="hidden" name="session_id" value="<?= $session['id'] ?>">
                             <input type="hidden" name="status" value="accepted">
                             <button type="submit" class="btn btn--outline"
                                 style="width:100%; color: #10b981;">Accepter</button>
                         </form>
                         <form action="/session/respond" method="POST">
+                            <?php \App\Helpers\CsrfHelper::insertField(); ?>
                             <input type="hidden" name="session_id" value="<?= $session['id'] ?>">
                             <input type="hidden" name="status" value="refused">
                             <button type="submit" class="btn btn--outline"

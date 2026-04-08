@@ -8,23 +8,39 @@ class App
 
     public function __construct(Router $router)
     {
+        // Session security hardening
+        ini_set('session.cookie_httponly', 1);
+        ini_set('session.cookie_samesite', 'Lax');
+        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+            ini_set('session.cookie_secure', 1);
+        }
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Initialize CSRF token
+        \App\Helpers\CsrfHelper::generateToken();
+
         $this->router = $router;
     }
 
     public function run()
     {
-        // Session initialization
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start([
-                'cookie_httponly' => true,
-                'cookie_secure' => isset($_SERVER['HTTPS']),
-                'cookie_samesite' => 'Lax'
-            ]);
-        }
+        // CSRF Verification for state-changing methods
+        if (in_array($_SERVER['REQUEST_METHOD'], ['POST', 'PUT', 'DELETE'])) {
+            $token = $_POST['csrf_token'] ?? null;
+            if (!$token) {
+                // Check JSON input
+                $input = json_decode(file_get_contents('php://input'), true);
+                $token = $input['csrf_token'] ?? null;
+            }
 
-        // Global CSRF Token generation
-        if (!isset($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            if (!\App\Helpers\CsrfHelper::verifyToken($token)) {
+                http_response_code(403);
+                echo "Invalid CSRF Token. Please refresh the page.";
+                exit;
+            }
         }
 
         // Security Headers

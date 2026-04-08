@@ -41,6 +41,7 @@
             <?php endif; ?>
 
             <form action="/register" method="POST" class="auth-form" id="signup-form">
+                <?php \App\Helpers\CsrfHelper::insertField(); ?>
                 <!-- CSRF Token -->
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 

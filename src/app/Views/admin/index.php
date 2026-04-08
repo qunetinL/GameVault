@@ -16,24 +16,32 @@
             style="padding: 1.5rem; background: var(--card); border-radius: 1rem; border: 1px solid var(--border);">
             <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">👤</div>
             <div>
-                <div style="font-size: 1.5rem; font-weight: bold;">1,248</div>
+                <div style="font-size: 1.5rem; font-weight: bold;"><?= number_format($stats['total_users']) ?></div>
                 <div style="opacity: 0.7; font-size: 0.9rem;">Utilisateurs totaux</div>
+            </div>
+        </div>
+        <div class="stat-card"
+            style="padding: 1.5rem; background: var(--card); border-radius: 1rem; border: 1px solid var(--border);">
+            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🎮</div>
+            <div>
+                <div style="font-size: 1.5rem; font-weight: bold;"><?= number_format($stats['total_games']) ?></div>
+                <div style="opacity: 0.7; font-size: 0.9rem;">Jeux au catalogue</div>
             </div>
         </div>
         <div class="stat-card"
             style="padding: 1.5rem; background: var(--card); border-radius: 1rem; border: 1px solid var(--border);">
             <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📅</div>
             <div>
-                <div style="font-size: 1.5rem; font-weight: bold;">142</div>
-                <div style="opacity: 0.7; font-size: 0.9rem;">Sessions ce mois</div>
+                <div style="font-size: 1.5rem; font-weight: bold;"><?= number_format($stats['total_sessions']) ?></div>
+                <div style="opacity: 0.7; font-size: 0.9rem;">Sessions créées</div>
             </div>
         </div>
         <div class="stat-card"
             style="padding: 1.5rem; background: var(--card); border-radius: 1rem; border: 1px solid var(--border);">
             <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">⚠️</div>
             <div>
-                <div style="font-size: 1.5rem; font-weight: bold;">5</div>
-                <div style="opacity: 0.7; font-size: 0.9rem;">Signalements en attente</div>
+                <div style="font-size: 1.5rem; font-weight: bold;"><?= number_format($stats['pending_games']) ?></div>
+                <div style="opacity: 0.7; font-size: 0.9rem;">Jeux en attente</div>
             </div>
         </div>
     </div>
@@ -55,24 +63,39 @@
                 <?php foreach ($users as $user): ?>
                     <tr style="border-top: 1px solid var(--border);">
                         <td style="padding: 1rem;">
-                            <?= htmlspecialchars($user['name']) ?>
+                            <?= htmlspecialchars($user['username']) ?>
                         </td>
                         <td style="padding: 1rem;">
                             <?= htmlspecialchars($user['email']) ?>
                         </td>
-                        <td style="padding: 1rem;"><span class="badge"
-                                style="background: var(--primary); padding: 2px 8px; border-radius: 12px; font-size: 0.8rem;">
-                                <?= htmlspecialchars($user['role']) ?>
-                            </span></td>
                         <td style="padding: 1rem;">
-                            <span
-                                style="padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; background: <?= $user['status'] == 'Banni' ? '#EF4444' : '#10B981' ?>;">
-                                <?= htmlspecialchars($user['status']) ?>
+                            <span class="badge badge--<?= $user['role'] === 'admin' ? 'primary' : 'secondary' ?>">
+                                <?= htmlspecialchars($user['role']) ?>
                             </span>
                         </td>
                         <td style="padding: 1rem;">
-                            <button class="btn btn--icon-only btn--outline"
-                                style="padding: 4px; border-radius: 4px;">⚙️</button>
+                            <span class="badge badge--<?= $user['status'] === 'active' ? 'success' : 'danger' ?>">
+                                <?= htmlspecialchars($user['status']) ?>
+                            </span>
+                        </td>
+                        <td style="padding: 1rem; display: flex; gap: 0.5rem;">
+                            <form action="/admin/user/update" method="POST" style="margin: 0;">
+                                <?php \App\Helpers\CsrfHelper::insertField(); ?>
+                                <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
+                                <?php if ($user['status'] === 'active'): ?>
+                                    <button type="submit" name="action" value="ban" class="btn btn--sm btn--outline"
+                                        style="color: var(--danger); border-color: var(--danger);"
+                                        onclick="return confirm('Bannir cet utilisateur ?')">Bannir</button>
+                                <?php else: ?>
+                                    <button type="submit" name="action" value="unban" class="btn btn--sm btn--outline"
+                                        style="color: var(--success); border-color: var(--success);">Gracier</button>
+                                <?php endif; ?>
+
+                                <?php if ($user['role'] !== 'admin'): ?>
+                                    <button type="submit" name="action" value="promote" class="btn btn--sm btn--outline"
+                                        onclick="return confirm('Promouvoir en Admin ?')">Promouvoir</button>
+                                <?php endif; ?>
+                            </form>
                         </td>
                     </tr>
                 <?php endforeach; ?>

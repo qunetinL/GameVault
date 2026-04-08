@@ -155,6 +155,16 @@ class GameController extends Controller
 
     private function handleUpload($file)
     {
+        // 1. Verify MIME type (Security Hardening)
+        $allowedMimes = ['image/jpeg', 'image/png', 'image/webp'];
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $mime = $finfo->file($file['tmp_name']);
+
+        if (!in_array($mime, $allowedMimes)) {
+            return null; // Rejected
+        }
+
+        // 2. Process valid upload
         $uploadDir = __DIR__ . '/../../public/uploads/covers/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0777, true);
