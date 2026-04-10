@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        <?= $title ?? 'GameVault' ?>
+        <?= htmlspecialchars($title ?? 'GameVault', ENT_QUOTES, 'UTF-8') ?>
     </title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/ui-components.css">
@@ -37,8 +37,10 @@
                 ['href' => '/sessions', 'label' => 'Sessions', 'icon' => 'calendar'],
                 ['href' => '/stats', 'label' => 'Statistiques', 'icon' => 'bar-chart'],
                 ['href' => '/chat', 'label' => 'Chat', 'icon' => 'message'],
-                ['href' => '/admin', 'label' => 'Admin', 'icon' => 'shield'],
             ];
+            if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+                $navItems[] = ['href' => '/admin', 'label' => 'Admin', 'icon' => 'shield'];
+            }
             $icons = [
                 'home' => '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
                 'dashboard' => '<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>',

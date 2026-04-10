@@ -26,7 +26,7 @@
             <article class="game-card">
                 <a href="/game?id=<?= $game['id'] ?>" style="display:contents">
                     <div class="game-card__cover">
-                        <img src="<?= $game['cover_image'] ?? '/img/placeholder.png' ?>"
+                        <img src="<?= htmlspecialchars($game['cover_image'] ?? '/img/placeholder.png', ENT_QUOTES, 'UTF-8') ?>"
                             alt="<?= htmlspecialchars($game['title']) ?>" loading="lazy"
                             onerror="this.src='/img/placeholder.png'">
                         <div class="game-card__rating-badge">

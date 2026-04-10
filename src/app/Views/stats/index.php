@@ -40,7 +40,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         // 1. Genres Chart
         const genresCtx = document.getElementById('genresChart').getContext('2d');
-        const genresData = <?= json_encode($genres) ?>;
+        const genresData = <?= json_encode($genres, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 
         new Chart(genresCtx, {
             type: 'doughnut',
@@ -64,7 +64,7 @@
 
         // 2. Sessions Chart
         const sessionsCtx = document.getElementById('sessionsChart').getContext('2d');
-        const sessionsData = <?= json_encode($sessions) ?>;
+        const sessionsData = <?= json_encode($sessions, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 
         new Chart(sessionsCtx, {
             type: 'line',
@@ -91,7 +91,7 @@
 
         // 3. Top Games Chart
         const topGamesCtx = document.getElementById('topGamesChart').getContext('2d');
-        const topGamesData = <?= json_encode($topGames) ?>;
+        const topGamesData = <?= json_encode($topGames, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 
         new Chart(topGamesCtx, {
             type: 'bar',

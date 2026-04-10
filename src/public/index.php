@@ -34,12 +34,12 @@ $router->post('/session/vote', 'SessionsController@vote', [\App\Middleware\AuthM
 $router->get('/api/games', 'ApiController@getGames');
 $router->get('/api/games/search', 'ApiController@searchGames');
 $router->get('/api/games/:id', 'ApiController@getGame');
-$router->post('/api/games', 'ApiController@createGame');
-$router->put('/api/games/:id', 'ApiController@updateGame');
-$router->delete('/api/games/:id', 'ApiController@deleteGame');
+$router->post('/api/games', 'ApiController@createGame', [\App\Middleware\AuthMiddleware::class]);
+$router->put('/api/games/:id', 'ApiController@updateGame', [\App\Middleware\AuthMiddleware::class]);
+$router->delete('/api/games/:id', 'ApiController@deleteGame', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/api/sessions', 'ApiController@getSessions');
 $router->get('/api/messages/:id', 'ApiController@getNewMessages');
-$router->post('/api/messages', 'ApiController@sendMessage');
+$router->post('/api/messages', 'ApiController@sendMessage', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/api/stats', 'ApiController@getStats');
 
 $router->get('/stats', 'StatsController@index', [\App\Middleware\AuthMiddleware::class]);

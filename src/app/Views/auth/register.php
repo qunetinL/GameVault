@@ -42,8 +42,6 @@
 
             <form action="/register" method="POST" class="auth-form" id="signup-form">
                 <?php \App\Helpers\CsrfHelper::insertField(); ?>
-                <!-- CSRF Token -->
-                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 
                 <div class="form-group">
                     <label for="username" class="form-label">Nom d'utilisateur</label>

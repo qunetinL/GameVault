@@ -22,7 +22,7 @@
 
     <div class="game-detail" style="display:flex; gap: 3rem; margin-top: 2rem;">
         <div class="game-detail__cover" style="flex: 0 0 300px;">
-            <img src="<?= $game['cover_image'] ?? '/img/placeholder.png' ?>"
+            <img src="<?= htmlspecialchars($game['cover_image'] ?? '/img/placeholder.png', ENT_QUOTES, 'UTF-8') ?>"
                 alt="<?= htmlspecialchars($game['title']) ?>"
                 style="width:100%; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
             <div class="game-detail__rating" style="margin-top: 1.5rem; text-align: center;">

@@ -67,12 +67,7 @@ class AuthController extends Controller
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['username'];
             $_SESSION['user_role'] = $user['role'];
-
-            if ($remember) {
-                $token = bin2hex(random_bytes(32));
-                // In a real app, store this token in DB tied to user
-                setcookie('remember_me', $token, time() + (86400 * 30), "/", "", isset($_SERVER['HTTPS']), true);
-            }
+            session_regenerate_id(true);
 
             header('Location: /dashboard');
             exit;
@@ -93,10 +88,22 @@ class AuthController extends Controller
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
 
-        // Simplistic validation for now
+        // Validation
         if (empty($username) || empty($email) || empty($password)) {
             return $this->render('auth/register', [
                 'error' => 'Tous les champs sont obligatoires.'
+            ], false);
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return $this->render('auth/register', [
+                'error' => 'Adresse email invalide.'
+            ], false);
+        }
+
+        if (strlen($password) < 8) {
+            return $this->render('auth/register', [
+                'error' => 'Le mot de passe doit contenir au moins 8 caractères.'
             ], false);
         }
 
@@ -119,6 +126,15 @@ class AuthController extends Controller
 
     public function logout()
     {
+        $_SESSION = [];
+        if (ini_get('session.use_cookies')) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params['path'], $params['domain'],
+                $params['secure'], $params['httponly']
+            );
+        }
+        setcookie('remember_me', '', time() - 42000, '/');
         session_destroy();
         header('Location: /login');
         exit;

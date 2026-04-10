@@ -26,14 +26,14 @@
                 <?php foreach ($popularGames as $game): ?>
                     <div class="card"
                         style="background: var(--card); border-radius: 1rem; overflow: hidden; border: 1px solid var(--border);">
-                        <img src="<?= $game['cover_image'] ?? $game['img'] ?>" alt="<?= $game['title'] ?>"
+                        <img src="<?= htmlspecialchars($game['cover_image'] ?? $game['img'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($game['title'], ENT_QUOTES, 'UTF-8') ?>"
                             style="width:100%; height: 120px; object-fit: cover;">
                         <div style="padding: 1rem;">
                             <h4 style="font-size: 0.9rem;">
                                 <?= htmlspecialchars($game['title']) ?>
                             </h4>
                             <div style="font-size: 0.8rem; opacity: 0.7;">⭐
-                                <?= $game['rating'] ?>
+                                <?= htmlspecialchars($game['rating'], ENT_QUOTES, 'UTF-8') ?>
                             </div>
                         </div>
                     </div>

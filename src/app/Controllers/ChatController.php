@@ -13,7 +13,11 @@ class ChatController extends Controller
         $userModel = new User();
         $messageModel = new Message();
 
-        $userId = $_SESSION['user_id'] ?? 1;
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit;
+        }
+        $userId = $_SESSION['user_id'];
         $currentUser = $userModel->query("SELECT id, username FROM users WHERE id = ?", [$userId])->fetch();
 
         $sessionId = $_GET['session_id'] ?? 1;

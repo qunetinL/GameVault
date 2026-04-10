@@ -1,4 +1,4 @@
-<div class="chat-app" data-user-id="<?= $currentUser['id'] ?>" data-session-id="<?= $session_id ?>"
+<div class="chat-app" data-user-id="<?= htmlspecialchars($currentUser['id'], ENT_QUOTES, 'UTF-8') ?>" data-session-id="<?= htmlspecialchars($session_id, ENT_QUOTES, 'UTF-8') ?>"
     data-username="<?= htmlspecialchars($currentUser['username']) ?>">
 
     <!-- Sidebar Contacts & Voting -->

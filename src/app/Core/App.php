@@ -59,7 +59,7 @@ class App
                 $code = 500;
             }
             http_response_code($code);
-            echo $e->getMessage();
+            echo 'An unexpected error occurred. Please try again later.';
         }
     }
 }

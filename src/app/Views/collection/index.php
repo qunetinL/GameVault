@@ -60,7 +60,7 @@
                                 </svg>
                             </button>
                         </form>
-                        <img src="<?= $game['cover_image'] ?? '/img/placeholder.png' ?>" alt="<?= $game['title'] ?>"
+                        <img src="<?= $game['cover_image'] ?? '/img/placeholder.png' ?>" alt="<?= htmlspecialchars($game['title'], ENT_QUOTES, 'UTF-8') ?>"
                             loading="lazy"
                             onerror="this.style.display='none';this.closest('.game-card__cover').textContent='🎮';">
                         <div class="game-card__rating-badge">

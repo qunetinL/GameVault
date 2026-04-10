@@ -13,7 +13,7 @@
 
     <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; margin-top: 2rem;">
         <div class="card" style="overflow: hidden; border-radius: 1rem; border: 1px solid var(--border);">
-            <img src="<?= $game['cover_image'] ?>" alt="<?= htmlspecialchars($game['title']) ?>"
+            <img src="<?= htmlspecialchars($game['cover_image'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($game['title']) ?>"
                 style="width: 100%; height: auto; display: block;">
         </div>
         <div>
@@ -25,7 +25,7 @@
                 </p>
                 <div style="margin-top: 2rem;">
                     <strong>Note :</strong>
-                    <?= $game['rating'] ?> / 5 ⭐
+                    <?= htmlspecialchars($game['rating'], ENT_QUOTES, 'UTF-8') ?> / 5 ⭐
                 </div>
                 <div style="margin-top: 2rem; display: flex; gap: 1rem;">
                     <button class="btn btn--primary">Lancer une session</button>

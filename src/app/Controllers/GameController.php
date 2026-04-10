@@ -143,13 +143,18 @@ class GameController extends Controller
             $status = 'added';
         }
 
-        if ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '' === 'XMLHttpRequest') {
+        if (($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest') {
             header('Content-Type: application/json');
             echo json_encode(['status' => 'success', 'action' => $status]);
             exit;
         }
 
-        header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? '/game?id=' . $id));
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+        $parsed = parse_url($referer);
+        $safeDest = (isset($parsed['path']) && strpos($parsed['path'], '/') === 0 && !strpos($parsed['path'], '//') !== false)
+            ? $parsed['path'] . (isset($parsed['query']) ? '?' . $parsed['query'] : '')
+            : '/game?id=' . $id;
+        header('Location: ' . $safeDest);
         exit;
     }
 
@@ -167,10 +172,15 @@ class GameController extends Controller
         // 2. Process valid upload
         $uploadDir = __DIR__ . '/../../public/uploads/covers/';
         if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
+            mkdir($uploadDir, 0755, true);
         }
 
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $mimeToExt = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/webp' => 'webp',
+        ];
+        $extension = $mimeToExt[$mime];
         $filename = bin2hex(random_bytes(16)) . '.' . $extension;
         $targetFile = $uploadDir . $filename;
 

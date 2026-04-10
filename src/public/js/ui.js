@@ -3,6 +3,12 @@
  * Notifications, Modals, Theme Toggle
  */
 
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
 class Toast {
     static show(message, type = 'success', duration = 3000) {
         let container = document.getElementById('toast-container');
@@ -17,7 +23,7 @@ class Toast {
         toast.innerHTML = `
             <div class="toast__content">
                 <span class="toast__icon">${type === 'success' ? '✅' : '❌'}</span>
-                <span class="toast__message">${message}</span>
+                <span class="toast__message">${escapeHtml(message)}</span>
             </div>
         `;
 
@@ -46,8 +52,8 @@ class Modal {
         const modal = document.createElement('div');
         modal.className = 'modal-card';
         modal.innerHTML = `
-            <h2 class="modal-title">${title}</h2>
-            <p class="modal-text">${message}</p>
+            <h2 class="modal-title">${escapeHtml(title)}</h2>
+            <p class="modal-text">${escapeHtml(message)}</p>
             <div class="modal-actions">
                 <button class="btn btn--outline modal-cancel">Annuler</button>
                 <button class="btn btn--danger modal-confirm">Confirmer</button>

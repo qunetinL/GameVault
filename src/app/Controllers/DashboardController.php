@@ -10,7 +10,11 @@ class DashboardController extends Controller
     public function index()
     {
         $gameModel = new Game();
-        $userId = $_SESSION['user_id'] ?? 1;
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit;
+        }
+        $userId = $_SESSION['user_id'];
 
         $stats = [
             'games_count' => 124,

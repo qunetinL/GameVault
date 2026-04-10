@@ -29,12 +29,12 @@
                     <label for="release_date" style="display:block; margin-bottom: 0.5rem; font-weight: 500;">Date de
                         sortie</label>
                     <input type="date" name="release_date" id="release_date" class="form-input"
-                        value="<?= $game['release_date'] ?>" style="width:100%">
+                        value="<?= htmlspecialchars($game['release_date'], ENT_QUOTES, 'UTF-8') ?>" style="width:100%">
                 </div>
                 <div class="form-group" style="flex:1">
                     <label for="rating" style="display:block; margin-bottom: 0.5rem; font-weight: 500;">Note /10</label>
                     <input type="number" name="rating" id="rating" step="0.1" min="0" max="10" class="form-input"
-                        value="<?= $game['rating'] ?>" style="width:100%">
+                        value="<?= htmlspecialchars($game['rating'], ENT_QUOTES, 'UTF-8') ?>" style="width:100%">
                 </div>
             </div>
 

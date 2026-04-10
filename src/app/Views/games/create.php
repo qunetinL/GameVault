@@ -9,7 +9,6 @@
     <div class="card" style="max-width: 600px; margin: 2rem auto; padding: 2rem;">
         <form action="/game/add" method="POST" enctype="multipart/form-data">
             <?php \App\Helpers\CsrfHelper::insertField(); ?>
-            <?php \App\Helpers\CsrfHelper::insertField(); ?>
             <div class="form-group" style="margin-bottom: 1.5rem;">
                 <label for="title" style="display:block; margin-bottom: 0.5rem; font-weight: 500;">Titre du jeu</label>
                 <input type="text" name="title" id="title" class="form-input" required style="width:100%">

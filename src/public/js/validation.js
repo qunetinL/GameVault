@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const emailInput = signupForm.querySelector('input[type="email"]');
     const passwordInput = signupForm.querySelector('input[type="password"]');
-    const confirmInput = signupForm.querySelector('name="confirm_password"');
+    const confirmInput = signupForm.querySelector('[name="confirm_password"]');
 
     // Pour cet exemple, on cherche par ID ou sélecteur générique si name n'est pas dispo
     const passwordConfirm = document.getElementById('register-password-confirm') || signupForm.querySelector('input[name="password_confirm"]');

@@ -50,7 +50,7 @@ class DbHelper
 
     public static function getInstance()
     {
-        if (self::$instance == null) {
+        if (self::$instance === null) {
             self::$instance = new DbHelper();
         }
         return self::$instance;

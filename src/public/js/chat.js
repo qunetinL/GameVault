@@ -2,6 +2,12 @@
  * chat.js - Logique de chat en temps réel (Polling) et système de vote
  */
 
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const chatApp = document.querySelector('.chat-app');
     if (!chatApp) return;
@@ -49,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const time = new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
         msgDiv.innerHTML = `
-            ${!isMe ? `<span style="font-size: 0.7rem; display: block; opacity: 0.7; margin-bottom: 2px;">${msg.username}</span>` : ''}
+            ${!isMe ? `<span style="font-size: 0.7rem; display: block; opacity: 0.7; margin-bottom: 2px;">${escapeHtml(msg.username)}</span>` : ''}
             <p></p>
             <span class="message-time">${time}</span>
         `;
@@ -89,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fetchVotes = async () => {
         try {
-            const response = await fetch(`/api/votes.php?session_id=${sessionId}`);
+            const response = await fetch(`/session/vote?session_id=${sessionId}`);
             if (!response.ok) return;
             const votes = await response.json();
 
@@ -105,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const div = document.createElement('div');
             div.className = 'vote-option';
             div.innerHTML = `
-                <span>${vote.title}</span>
+                <span>${escapeHtml(vote.title)}</span>
                 <span class="vote-count">${vote.vote_count} vote(s)</span>
             `;
             div.onclick = () => castVote(vote.game_id);
@@ -115,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const castVote = async (gameId) => {
         try {
-            await fetch('/api/votes.php', {
+            await fetch('/session/vote', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -134,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateTypingStatus = async (status) => {
         try {
-            const response = await fetch(`/api/typing.php?session_id=${sessionId}&user_id=${userId}&typing=${status ? 1 : 0}`);
+            const response = await fetch(`/api/typing?session_id=${sessionId}&user_id=${userId}&typing=${status ? 1 : 0}`);
             const data = await response.json();
 
             if (data.typing_count > 0) {

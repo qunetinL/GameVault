@@ -42,8 +42,6 @@
 
             <form action="/login" method="POST" class="auth-form">
                 <?php \App\Helpers\CsrfHelper::insertField(); ?>
-                <!-- CSRF Token -->
-                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
 
                 <div class="form-group">
                     <label for="email" class="form-label">Adresse Email</label>
