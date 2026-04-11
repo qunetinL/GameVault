@@ -107,6 +107,12 @@ class AuthController extends Controller
             ], false);
         }
 
+        if (!isset($_POST['terms']) || $_POST['terms'] !== 'on') {
+            return $this->render('auth/register', [
+                'error' => 'Vous devez accepter les conditions d\'utilisation et la politique de confidentialité.'
+            ], false);
+        }
+
         if ($this->userModel->findByEmail($email) || $this->userModel->findByUsername($username)) {
             return $this->render('auth/register', [
                 'error' => "L'email ou le nom d'utilisateur est déjà utilisé."
@@ -117,7 +123,8 @@ class AuthController extends Controller
             'username' => $username,
             'email' => $email,
             'password' => $password,
-            'role' => 'user'
+            'role' => 'user',
+            'consent_at' => date('Y-m-d H:i:s')
         ]);
 
         header('Location: /login');

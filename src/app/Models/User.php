@@ -18,14 +18,15 @@ class User extends Model
 
     public function create($data)
     {
-        $sql = "INSERT INTO users (username, email, password_hash, role, created_at) 
-                VALUES (:username, :email, :password_hash, :role, NOW())";
+        $sql = "INSERT INTO users (username, email, password_hash, role, consent_at, created_at)
+                VALUES (:username, :email, :password_hash, :role, :consent_at, NOW())";
 
         $params = [
             'username' => $data['username'],
             'email' => $data['email'],
             'password_hash' => password_hash($data['password'], PASSWORD_BCRYPT),
-            'role' => $data['role'] ?? 'user'
+            'role' => $data['role'] ?? 'user',
+            'consent_at' => $data['consent_at'] ?? date('Y-m-d H:i:s')
         ];
 
         return $this->query($sql, $params);
@@ -75,5 +76,42 @@ class User extends Model
             'total_sessions' => $this->query("SELECT COUNT(*) FROM sessions")->fetchColumn(),
             'pending_games' => $this->query("SELECT COUNT(*) FROM games WHERE status = 'pending'")->fetchColumn(),
         ];
+    }
+
+    public function updateProfile($id, $data)
+    {
+        $sql = "UPDATE users SET username = :username, email = :email WHERE id = :id";
+        return $this->query($sql, [
+            'username' => $data['username'],
+            'email' => $data['email'],
+            'id' => $id
+        ]);
+    }
+
+    public function deleteAccount($id)
+    {
+        return $this->query("DELETE FROM users WHERE id = ?", [$id]);
+    }
+
+    public function exportData($id)
+    {
+        $user = $this->query("SELECT id, username, email, role, status, created_at, consent_at FROM users WHERE id = ?", [$id])->fetch();
+        $collections = $this->query("SELECT * FROM collections WHERE user_id = ?", [$id])->fetchAll();
+        $messages = $this->query("SELECT * FROM messages WHERE sender_id = ?", [$id])->fetchAll();
+        $sessions = $this->query("SELECT * FROM sessions WHERE organizer_id = ?", [$id])->fetchAll();
+        $votes = $this->query("SELECT * FROM votes WHERE user_id = ?", [$id])->fetchAll();
+
+        return [
+            'user' => $user,
+            'collections' => $collections,
+            'messages' => $messages,
+            'sessions' => $sessions,
+            'votes' => $votes,
+        ];
+    }
+
+    public function findById($id)
+    {
+        return $this->query("SELECT * FROM users WHERE id = ?", [$id])->fetch();
     }
 }

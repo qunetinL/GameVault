@@ -47,6 +47,17 @@ $router->get('/stats', 'StatsController@index', [\App\Middleware\AuthMiddleware:
 $router->get('/admin', 'AdminController@index', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
 $router->post('/admin/user/update', 'AdminController@updateUser', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
 $router->post('/admin/game/update', 'AdminController@updateGame', [\App\Middleware\AuthMiddleware::class, \App\Middleware\AdminMiddleware::class]);
+// Profile routes (RGPD)
+$router->get('/profile', 'ProfileController@index', [\App\Middleware\AuthMiddleware::class]);
+$router->post('/profile/update', 'ProfileController@update', [\App\Middleware\AuthMiddleware::class, \App\Middleware\CSRFMiddleware::class]);
+$router->post('/profile/delete', 'ProfileController@delete', [\App\Middleware\AuthMiddleware::class, \App\Middleware\CSRFMiddleware::class]);
+$router->get('/profile/export', 'ProfileController@export', [\App\Middleware\AuthMiddleware::class]);
+
+// Legal pages (RGPD)
+$router->get('/privacy', 'LegalController@privacy');
+$router->get('/cgu', 'LegalController@cgu');
+$router->get('/mentions-legales', 'LegalController@mentions');
+
 $router->get('/dashboard', 'DashboardController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/games', 'GameController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/game', 'GameController@show', [\App\Middleware\AuthMiddleware::class]);

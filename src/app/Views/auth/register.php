@@ -62,10 +62,10 @@
                 </div>
 
                 <div class="form-group" style="display:flex; align-items:flex-start; gap:0.5rem; margin-top:1.5rem">
-                    <input type="checkbox" id="terms" required style="margin-top: 0.25rem;">
+                    <input type="checkbox" id="terms" name="terms" required style="margin-top: 0.25rem;">
                     <label for="terms" class="form-label" style="font-size: 0.75rem; color: var(--muted-fg)">
-                        J'accepte les <a href="#" style="color:var(--primary)">Conditions d'utilisation</a> et la <a
-                            href="#" style="color:var(--primary)">Politique de confidentialité</a>.
+                        J'accepte les <a href="/cgu" style="color:var(--primary)">Conditions d'utilisation</a> et la <a
+                            href="/privacy" style="color:var(--primary)">Politique de confidentialité</a>.
                     </label>
                 </div>
 

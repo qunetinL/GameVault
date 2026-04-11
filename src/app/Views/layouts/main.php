@@ -33,6 +33,7 @@
             $navItems = [
                 ['href' => '/', 'label' => 'Accueil', 'icon' => 'home'],
                 ['href' => '/dashboard', 'label' => 'Dashboard', 'icon' => 'dashboard'],
+                ['href' => '/profile', 'label' => 'Profil', 'icon' => 'user'],
                 ['href' => '/collection', 'label' => 'Collection', 'icon' => 'gamepad'],
                 ['href' => '/sessions', 'label' => 'Sessions', 'icon' => 'calendar'],
                 ['href' => '/stats', 'label' => 'Statistiques', 'icon' => 'bar-chart'],
@@ -49,6 +50,7 @@
                 'message' => '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
                 'bar-chart' => '<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>',
                 'shield' => '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+                'user' => '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
             ];
             $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
@@ -101,8 +103,30 @@
             <p>©
                 <?= date('Y') ?> GameVault — Projet DWWM
             </p>
+            <nav style="margin-top: 0.5rem; font-size: 0.8rem; display: flex; gap: 1rem; justify-content: center;">
+                <a href="/privacy" style="color: var(--primary); text-decoration: none;">Politique de confidentialité</a>
+                <a href="/cgu" style="color: var(--primary); text-decoration: none;">CGU</a>
+                <a href="/mentions-legales" style="color: var(--primary); text-decoration: none;">Mentions légales</a>
+            </nav>
         </footer>
     </div>
+
+    <!-- Cookie consent banner (RGPD) -->
+    <div id="cookie-consent-banner" style="display:none; position:fixed; bottom:0; left:0; right:0; background:rgba(20,20,30,0.97); color:#fff; padding:1rem 2rem; z-index:9999; align-items:center; justify-content:center; gap:1rem; font-size:0.9rem; flex-wrap:wrap;">
+        <span>Ce site utilise des cookies essentiels pour son fonctionnement. <a href="/privacy" style="color:var(--primary);text-decoration:underline;">En savoir plus</a></span>
+        <button onclick="acceptCookies()" style="background:var(--primary);color:#fff;border:none;padding:0.5rem 1.5rem;border-radius:0.5rem;cursor:pointer;font-size:0.9rem;">Accepter</button>
+    </div>
+    <script>
+        (function() {
+            if (!localStorage.getItem('cookie_consent')) {
+                document.getElementById('cookie-consent-banner').style.display = 'flex';
+            }
+        })();
+        function acceptCookies() {
+            localStorage.setItem('cookie_consent', '1');
+            document.getElementById('cookie-consent-banner').style.display = 'none';
+        }
+    </script>
 
     <script src="/js/main.js"></script>
     <?php if (isset($scripts)):

@@ -119,4 +119,19 @@ class RedisHelper
             $this->redis->del($key);
         }
     }
+
+    /**
+     * Delete all Redis data associated with a user (RGPD - droit à l'effacement)
+     */
+    public function deleteUserData($userId)
+    {
+        if ($this->redis) {
+            $this->redis->del("user:{$userId}:activity");
+            // Delete any other user-specific keys matching the pattern
+            $keys = $this->redis->keys("user:{$userId}:*");
+            if (!empty($keys)) {
+                $this->redis->del(...$keys);
+            }
+        }
+    }
 }
