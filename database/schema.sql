@@ -22,8 +22,13 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash VARCHAR(255) NOT NULL,
     avatar VARCHAR(255) DEFAULT NULL,
     role ENUM('user', 'admin') DEFAULT 'user',
+    status ENUM('active', 'banned') DEFAULT 'active',
+    email_verified_at TIMESTAMP NULL DEFAULT NULL,
+    email_token VARCHAR(64) DEFAULT NULL,
+    consent_at TIMESTAMP NULL DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_email_token (email_token)
 ) ENGINE=InnoDB;
 
 -- ─────────────────────────────────────────────────

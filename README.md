@@ -21,11 +21,17 @@ Plateforme communautaire de gestion de collections de jeux vidéo et d'organisat
    ```bash
    git clone https://github.com/votre-utilisateur/GameVault.git
    ```
-2. Lancez les conteneurs :
+2. (Optionnel) Copiez le fichier d'environnement et ajustez les ports si besoin :
+   ```bash
+   cp .env.example .env
+   # Modifiez APP_PORT, PHPMYADMIN_PORT, etc. si les ports par défaut sont déjà utilisés
+   ```
+3. Lancez les conteneurs :
    ```bash
    docker-compose up -d --build
    ```
-3. L'application est disponible sur : `http://localhost:8080`
+4. L'application est disponible sur : `http://localhost:8080` (ou le port défini dans `.env`)
    PhpMyAdmin est sur : `http://localhost:8081`
 
 > Note : Le projet utilise le pattern MVC et la racine web sert le dossier `src/public`.
+> Les ports sont configurables via les variables `APP_PORT`, `PHPMYADMIN_PORT`, `MYSQL_PORT`, `REDIS_PORT` dans le fichier `.env`.

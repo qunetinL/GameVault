@@ -18,18 +18,34 @@ class User extends Model
 
     public function create($data)
     {
-        $sql = "INSERT INTO users (username, email, password_hash, role, consent_at, created_at)
-                VALUES (:username, :email, :password_hash, :role, :consent_at, NOW())";
+        $sql = "INSERT INTO users (username, email, password_hash, role, consent_at, email_token, created_at)
+                VALUES (:username, :email, :password_hash, :role, :consent_at, :email_token, NOW())";
 
         $params = [
             'username' => $data['username'],
             'email' => $data['email'],
             'password_hash' => password_hash($data['password'], PASSWORD_BCRYPT),
             'role' => $data['role'] ?? 'user',
-            'consent_at' => $data['consent_at'] ?? date('Y-m-d H:i:s')
+            'consent_at' => $data['consent_at'] ?? date('Y-m-d H:i:s'),
+            'email_token' => $data['email_token'] ?? null
         ];
 
         return $this->query($sql, $params);
+    }
+
+    public function findByEmailToken(string $token)
+    {
+        return $this->query("SELECT * FROM users WHERE email_token = ?", [$token])->fetch();
+    }
+
+    public function verifyEmail(int $id): void
+    {
+        $this->query("UPDATE users SET email_verified_at = NOW(), email_token = NULL WHERE id = ?", [$id]);
+    }
+
+    public function updateEmailToken(int $id, string $token): void
+    {
+        $this->query("UPDATE users SET email_token = ? WHERE id = ?", [$token, $id]);
     }
 
     public function getStats($userId)

@@ -19,6 +19,8 @@ $router->post('/login', 'AuthController@login', [\App\Middleware\CSRFMiddleware:
 $router->get('/register', 'AuthController@registerView');
 $router->post('/register', 'AuthController@register', [\App\Middleware\CSRFMiddleware::class, \App\Middleware\RateLimitMiddleware::class]);
 $router->get('/logout', 'AuthController@logout');
+$router->get('/verify-email', 'AuthController@verifyEmail');
+$router->get('/resend-verification', 'AuthController@resendVerification', [\App\Middleware\RateLimitMiddleware::class]);
 
 $router->get('/chat', 'ChatController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/collection', 'CollectionController@index', [\App\Middleware\AuthMiddleware::class]);

@@ -37,6 +37,12 @@
             <?php if (isset($error)): ?>
                 <div class="alert alert--error" style="margin-bottom: 1rem; color: #ff5555;">
                     <?= htmlspecialchars($error) ?>
+                    <?php if (!empty($showResendLink) && !empty($resendEmail)): ?>
+                        <br><a href="/resend-verification?email=<?= urlencode($resendEmail) ?>"
+                               style="color: #bd93f9; text-decoration: underline; font-size: 0.85rem;">
+                            Renvoyer l'email de vérification
+                        </a>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
 

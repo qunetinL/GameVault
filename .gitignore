@@ -24,3 +24,4 @@ docker/mysql_data/
 *.njsproj
 *.sln
 *.sw?
+*.env
