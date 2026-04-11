@@ -21,6 +21,10 @@ $router->post('/register', 'AuthController@register', [\App\Middleware\CSRFMiddl
 $router->get('/logout', 'AuthController@logout');
 $router->get('/verify-email', 'AuthController@verifyEmail');
 $router->get('/resend-verification', 'AuthController@resendVerification', [\App\Middleware\RateLimitMiddleware::class]);
+$router->get('/forgot-password', 'AuthController@forgotPasswordView');
+$router->post('/forgot-password', 'AuthController@forgotPassword', [\App\Middleware\CSRFMiddleware::class, \App\Middleware\RateLimitMiddleware::class]);
+$router->get('/reset-password', 'AuthController@resetPasswordView');
+$router->post('/reset-password', 'AuthController@resetPassword', [\App\Middleware\CSRFMiddleware::class]);
 
 $router->get('/chat', 'ChatController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/collection', 'CollectionController@index', [\App\Middleware\AuthMiddleware::class]);

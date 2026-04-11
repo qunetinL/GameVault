@@ -25,10 +25,13 @@ CREATE TABLE IF NOT EXISTS users (
     status ENUM('active', 'banned') DEFAULT 'active',
     email_verified_at TIMESTAMP NULL DEFAULT NULL,
     email_token VARCHAR(64) DEFAULT NULL,
+    reset_token VARCHAR(64) DEFAULT NULL,
+    reset_token_expires_at TIMESTAMP NULL DEFAULT NULL,
     consent_at TIMESTAMP NULL DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_email_token (email_token)
+    INDEX idx_email_token (email_token),
+    INDEX idx_reset_token (reset_token)
 ) ENGINE=InnoDB;
 
 -- ─────────────────────────────────────────────────

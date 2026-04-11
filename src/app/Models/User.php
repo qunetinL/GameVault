@@ -130,4 +130,28 @@ class User extends Model
     {
         return $this->query("SELECT * FROM users WHERE id = ?", [$id])->fetch();
     }
+
+    public function setResetToken(int $id, string $token): void
+    {
+        $this->query(
+            "UPDATE users SET reset_token = ?, reset_token_expires_at = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id = ?",
+            [$token, $id]
+        );
+    }
+
+    public function findByResetToken(string $token)
+    {
+        return $this->query(
+            "SELECT * FROM users WHERE reset_token = ? AND reset_token_expires_at > NOW()",
+            [$token]
+        )->fetch();
+    }
+
+    public function resetPassword(int $id, string $password): void
+    {
+        $this->query(
+            "UPDATE users SET password_hash = ?, reset_token = NULL, reset_token_expires_at = NULL WHERE id = ?",
+            [password_hash($password, PASSWORD_BCRYPT), $id]
+        );
+    }
 }

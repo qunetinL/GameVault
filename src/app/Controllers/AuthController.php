@@ -214,6 +214,119 @@ class AuthController extends Controller
         return ob_get_clean();
     }
 
+    public function forgotPasswordView()
+    {
+        if (isset($_SESSION['user_id'])) {
+            header('Location: /dashboard');
+            exit;
+        }
+        return $this->render('auth/forgot-password', ['title' => 'Mot de passe oublié — GameVault'], false);
+    }
+
+    public function forgotPassword()
+    {
+        $email = $_POST['email'] ?? '';
+
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return $this->render('auth/forgot-password', [
+                'title' => 'Mot de passe oublié — GameVault',
+                'error' => 'Veuillez entrer une adresse email valide.'
+            ], false);
+        }
+
+        $user = $this->userModel->findByEmail($email);
+
+        if ($user) {
+            $token = bin2hex(random_bytes(32));
+            $this->userModel->setResetToken($user['id'], $token);
+
+            $resetUrl = ($_ENV['APP_URL'] ?? 'http://localhost:8083') . '/reset-password?token=' . $token;
+            $emailBody = $this->renderEmail('emails/reset-password', [
+                'username' => $user['username'],
+                'resetUrl' => $resetUrl
+            ]);
+            MailHelper::send($email, 'GameVault — Réinitialisation de votre mot de passe', $emailBody);
+        }
+
+        // Toujours afficher le même message (anti-énumération)
+        return $this->render('auth/forgot-password', [
+            'title' => 'Mot de passe oublié — GameVault',
+            'success' => 'Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.'
+        ], false);
+    }
+
+    public function resetPasswordView()
+    {
+        $token = $_GET['token'] ?? '';
+
+        if (empty($token)) {
+            return $this->render('auth/reset-password', [
+                'title' => 'Réinitialisation — GameVault',
+                'error' => 'Token de réinitialisation manquant.'
+            ], false);
+        }
+
+        $user = $this->userModel->findByResetToken($token);
+
+        if (!$user) {
+            return $this->render('auth/reset-password', [
+                'title' => 'Réinitialisation — GameVault',
+                'error' => 'Ce lien est invalide ou a expiré. Veuillez refaire une demande.'
+            ], false);
+        }
+
+        return $this->render('auth/reset-password', [
+            'title' => 'Réinitialisation — GameVault',
+            'token' => $token
+        ], false);
+    }
+
+    public function resetPassword()
+    {
+        $token = $_POST['token'] ?? '';
+        $password = $_POST['password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
+
+        if (empty($token)) {
+            return $this->render('auth/reset-password', [
+                'title' => 'Réinitialisation — GameVault',
+                'error' => 'Token manquant.'
+            ], false);
+        }
+
+        $user = $this->userModel->findByResetToken($token);
+
+        if (!$user) {
+            return $this->render('auth/reset-password', [
+                'title' => 'Réinitialisation — GameVault',
+                'error' => 'Ce lien est invalide ou a expiré. Veuillez refaire une demande.'
+            ], false);
+        }
+
+        if (strlen($password) < 8) {
+            return $this->render('auth/reset-password', [
+                'title' => 'Réinitialisation — GameVault',
+                'error' => 'Le mot de passe doit contenir au moins 8 caractères.',
+                'token' => $token
+            ], false);
+        }
+
+        if ($password !== $confirmPassword) {
+            return $this->render('auth/reset-password', [
+                'title' => 'Réinitialisation — GameVault',
+                'error' => 'Les mots de passe ne correspondent pas.',
+                'token' => $token
+            ], false);
+        }
+
+        $this->userModel->resetPassword($user['id'], $password);
+
+        return $this->render('auth/verify', [
+            'title' => 'Réinitialisation — GameVault',
+            'success' => 'Votre mot de passe a été réinitialisé avec succès ! Vous pouvez maintenant vous connecter.'
+        ], false);
+    }
+
     public function logout()
     {
         $_SESSION = [];
