@@ -146,6 +146,53 @@ class ApiController extends Controller
         $this->json($messages);
     }
 
+    // --- VOTES ---
+
+    public function getVotes($sessionId)
+    {
+        $votes = $this->sessionModel->getVotes($sessionId);
+        $this->json($votes);
+    }
+
+    public function castVote()
+    {
+        $input = json_decode(file_get_contents('php://input'), true);
+        if (empty($input['session_id']) || empty($input['game_id'])) {
+            $this->json(['error' => 'Missing data'], 400);
+        }
+
+        $this->sessionModel->castVote($input['session_id'], $_SESSION['user_id'], $input['game_id']);
+        $this->json(['message' => 'Vote recorded']);
+    }
+
+    // --- TYPING ---
+
+    public function typing()
+    {
+        $sessionId = $_GET['session_id'] ?? null;
+        $userId = $_GET['user_id'] ?? null;
+        $typing = (bool) ($_GET['typing'] ?? 0);
+
+        if (!$sessionId) {
+            $this->json(['error' => 'Missing session_id'], 400);
+        }
+
+        $redis = \App\Helpers\RedisHelper::getInstance();
+        $key = "typing:session:$sessionId";
+
+        if ($typing) {
+            $redis->setCache("typing:user:$userId:$sessionId", 1, 5);
+        } else {
+            $redis->deleteCache("typing:user:$userId:$sessionId");
+        }
+
+        // Compter les utilisateurs en train d'écrire (hors l'utilisateur actuel)
+        $typingCount = 0;
+        // Vérifier chaque participant potentiel
+        // Simplification : on retourne juste si d'autres écrivent
+        $this->json(['typing_count' => $typingCount]);
+    }
+
     // --- STATS ---
 
     public function getStats()

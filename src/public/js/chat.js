@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isTabVisible) return;
 
         try {
-            const response = await fetch(`/session/vote?session_id=${sessionId}`);
+            const response = await fetch(`/api/votes/${sessionId}`);
             if (!response.ok) return;
             const votes = await response.json();
 
@@ -138,13 +138,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const castVote = async (gameId) => {
         try {
-            await fetch('/session/vote', {
+            await fetch('/api/votes', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     session_id: sessionId,
-                    user_id: userId,
-                    game_id: gameId
+                    game_id: gameId,
+                    csrf_token: document.querySelector('input[name="csrf_token"]')?.value || ''
                 })
             });
             fetchVotes();
@@ -197,6 +197,16 @@ document.addEventListener('DOMContentLoaded', () => {
     chatInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
         else handleTyping();
+    });
+
+    // Clic sur un contact → naviguer vers cette session de chat
+    document.querySelectorAll('.contact-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetSessionId = btn.dataset.sessionId;
+            if (targetSessionId && targetSessionId !== sessionId) {
+                window.location.href = `/chat?session_id=${targetSessionId}`;
+            }
+        });
     });
 
     // Initial load

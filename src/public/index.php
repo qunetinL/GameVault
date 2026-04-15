@@ -37,6 +37,9 @@ $router->post('/session/respond', 'SessionsController@respond', [\App\Middleware
 $router->post('/session/vote', 'SessionsController@vote', [\App\Middleware\AuthMiddleware::class]);
 
 // API Endpoints
+$router->get('/api/typing', 'ApiController@typing');
+$router->get('/api/votes/:id', 'ApiController@getVotes');
+$router->post('/api/votes', 'ApiController@castVote', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/api/games', 'ApiController@getGames');
 $router->get('/api/games/search', 'ApiController@searchGames');
 $router->get('/api/games/:id', 'ApiController@getGame');

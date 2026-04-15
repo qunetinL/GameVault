@@ -1,3 +1,4 @@
+<input type="hidden" name="csrf_token" value="<?= \App\Helpers\CsrfHelper::getToken() ?>">
 <div class="chat-app" data-user-id="<?= htmlspecialchars($currentUser['id'], ENT_QUOTES, 'UTF-8') ?>" data-session-id="<?= htmlspecialchars($session_id, ENT_QUOTES, 'UTF-8') ?>"
     data-username="<?= htmlspecialchars($currentUser['username']) ?>">
 
@@ -21,7 +22,7 @@
 
         <div class="chat-contacts">
             <?php foreach ($contacts as $contact): ?>
-                <button class="contact-item <?= $contact['id'] == ($currentUser['id'] == 1 ? 2 : 1) ? 'active' : '' ?>">
+                <button class="contact-item <?= $contact['id'] == $session_id ? 'active' : '' ?>" data-session-id="<?= htmlspecialchars($contact['id']) ?>">
                     <div class="contact-avatar">
                         <span class="avatar-init">
                             <?= substr($contact['name'], 0, 1) ?>
