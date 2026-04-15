@@ -30,8 +30,29 @@ Plateforme communautaire de gestion de collections de jeux vidéo et d'organisat
    ```bash
    docker-compose up -d --build
    ```
-4. L'application est disponible sur : `http://localhost:8080` (ou le port défini dans `.env`)
-   PhpMyAdmin est sur : `http://localhost:8081`
+4. Accès aux services :
+   - 🌐 **Application** : `http://localhost:8080` (ou port défini dans `APP_PORT`)
+   - 🐘 **PhpMyAdmin** : `http://localhost:8081` (ou port défini dans `PHPMYADMIN_PORT`)
+   - 📧 **Mailpit (Emails)** : `http://localhost:8025` (ou port défini dans `MAILPIT_UI_PORT`)
 
-> Note : Le projet utilise le pattern MVC et la racine web sert le dossier `src/public`.
-> Les ports sont configurables via les variables `APP_PORT`, `PHPMYADMIN_PORT`, `MYSQL_PORT`, `REDIS_PORT` dans le fichier `.env`.
+## 🔑 Comptes de Test et Administration
+
+Pour tester l'application sans créer de compte, vous pouvez utiliser les identifiants suivants (chargés via `seed.sql`) :
+
+### Administrateur
+- **Email** : `admin@gamevault.com`
+- **Mot de passe** : `password`
+- **Accès** : Donne accès au panneau `/admin` (gestion utilisateurs et jeux).
+
+### Utilisateurs Standards
+- **Email** : `alex@example.com` / `sarah@example.com`
+- **Mot de passe** : `password`
+
+## 📧 Vérification d'Email
+L'application requiert une vérification d'email lors de l'inscription. Tous les emails envoyés sont capturés par **Mailpit**. Pour vérifier un compte :
+1. Inscrivez-vous sur l'application.
+2. Allez sur `http://localhost:8025`.
+3. Cliquez sur le lien de confirmation dans l'email reçu.
+
+---
+> Les ports sont configurables via le fichier `.env` (`APP_PORT`, `PHPMYADMIN_PORT`, `MYSQL_PORT`, `REDIS_PORT`, `MAILPIT_UI_PORT`).
