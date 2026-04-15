@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         testdox="true">
+    <testsuites>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <env name="DB_HOST" value="db"/>
+        <env name="DB_NAME" value="gamevault_test"/>
+        <env name="DB_USER" value="gamer"/>
+        <env name="DB_PASS" value="password"/>
+        <env name="REDIS_HOST" value="redis"/>
+        <env name="APP_ENV" value="testing"/>
+        <env name="APP_URL" value="http://localhost:8083"/>
+        <env name="MAIL_HOST" value="mailpit"/>
+        <env name="MAIL_PORT" value="1025"/>
+    </php>
+</phpunit>

@@ -1,0 +1,16 @@
+/* ============================================================
+   GameVault — Main Entry Point
+   Modularized Architecture
+   ============================================================ */
+
+/* 1. Base Styles & Variables */
+@import url('base.css');
+
+/* 2. Page & Application Layout */
+@import url('layout.css');
+
+/* 3. Reusable UI Components */
+@import url('components.css');
+
+/* 4. Auth & Forms */
+@import url('auth.css');

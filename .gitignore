@@ -1,24 +1,31 @@
 # Dependencies
-/vendor/
-/node_modules/
+vendor/
+src/vendor/
+node_modules/
 
 # Environment files
 .env
+src/.env
 .env.local
 
 # Logs
-/logs/
+logs/
 *.log
 
 # Docker
-/docker/mysql_data/
+docker/mysql_data/
+
+# Tests
+.phpunit.result.cache
+.phpunit.cache/
 
 # IDE & OS
-/.idea/
-/.vscode/
+.idea/
+.vscode/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.env

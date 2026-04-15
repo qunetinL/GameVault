@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  php:
+    restart: always
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    environment:
+      - APP_ENV=production
+      - DISPLAY_ERRORS=0
+
+  nginx:
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+
+  db:
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
+  redis:
+    restart: always
