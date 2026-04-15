@@ -32,7 +32,14 @@ class RateLimitMiddleware
 
         if ($data['requests'] > $this->maxRequests) {
             http_response_code(429);
-            die("Trop de tentatives. Veuillez patienter une minute.");
+
+            // Renvoyer une page stylisée au lieu d'un die() brut
+            $error = 'Trop de tentatives. Veuillez patienter une minute.';
+            $title = 'Limite atteinte — GameVault';
+            ob_start();
+            require __DIR__ . '/../Views/errors/429.php';
+            echo ob_get_clean();
+            exit;
         }
     }
 }
