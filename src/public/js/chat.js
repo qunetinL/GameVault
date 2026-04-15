@@ -25,10 +25,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastMessageId = 0;
     let isTyping = false;
     let typingTimeout;
+    let isTabVisible = true;
+
+    // --- VISIBILITY API (réduire le polling quand l'onglet est inactif) ---
+
+    document.addEventListener('visibilitychange', () => {
+        isTabVisible = !document.hidden;
+    });
 
     // --- MESSAGES ---
 
     const fetchMessages = async () => {
+        if (!isTabVisible) return; // Ne pas poll si l'onglet est inactif
+
         try {
             const response = await fetch(`/api/messages/${sessionId}?last_id=${lastMessageId}`);
             if (!response.ok) return;
@@ -71,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         stopTyping();
 
         try {
-            const response = await fetch('/api/messages', {
+            await fetch('/api/messages', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -81,19 +90,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     csrf_token: document.querySelector('input[name="csrf_token"]')?.value || ''
                 })
             });
-            // Le message sera récupéré par le prochain poll
+            // Récupérer le message immédiatement après l'envoi
+            fetchMessages();
         } catch (error) {
             console.error('Error sending message:', error);
         }
     };
 
     const scrollToBottom = () => {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        // Ne scroller que si l'utilisateur est déjà proche du bas
+        const threshold = 150;
+        const isNearBottom = chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < threshold;
+        if (isNearBottom) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
     };
 
     // --- VOTES ---
 
     const fetchVotes = async () => {
+        if (!isTabVisible) return;
+
         try {
             const response = await fetch(`/session/vote?session_id=${sessionId}`);
             if (!response.ok) return;
@@ -130,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     game_id: gameId
                 })
             });
-            fetchVotes(); // Rafraîchir immédiatement
+            fetchVotes();
         } catch (error) {
             console.error('Error casting vote:', error);
         }
@@ -156,7 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    let typingDebounceTimeout;
     const handleTyping = () => {
+        // Debounce : n'envoyer le statut "typing" qu'une fois toutes les 2s
         if (!isTyping) {
             isTyping = true;
             updateTypingStatus(true);
@@ -184,8 +203,10 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchMessages();
     fetchVotes();
 
-    // Polling intervals
-    setInterval(fetchMessages, 2000); // Poll messages every 2s
-    setInterval(fetchVotes, 5000);    // Poll votes every 5s
-    setInterval(() => updateTypingStatus(isTyping), 3000); // Check typing status
+    // Polling intervals (réduits quand l'onglet est inactif via isTabVisible)
+    setInterval(fetchMessages, 3000);  // Poll messages every 3s (était 2s)
+    setInterval(fetchVotes, 10000);    // Poll votes every 10s (était 5s)
+    setInterval(() => {
+        if (isTabVisible) updateTypingStatus(isTyping);
+    }, 4000);
 });
