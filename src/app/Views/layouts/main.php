@@ -7,8 +7,12 @@
     <title>
         <?= htmlspecialchars($title ?? 'GameVault', ENT_QUOTES, 'UTF-8') ?>
     </title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/ui-components.css">
+    <link rel="stylesheet" href="/css/style.css?v=3">
+    <link rel="stylesheet" href="/css/ui-components.css?v=2">
+    <style>
+        .main-content { display: flex; flex-direction: column; }
+        .main-content__body { flex: 1; }
+    </style>
     <?php if (isset($styles)):
         foreach ($styles as $style): ?>
             <link rel="stylesheet" href="<?= $style ?>">
@@ -97,7 +101,9 @@
     </aside>
 
     <div class="main-content">
-        <?= $content ?>
+        <div class="main-content__body">
+            <?= $content ?>
+        </div>
 
         <footer class="footer">
             <p>©

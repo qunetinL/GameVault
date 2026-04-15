@@ -262,4 +262,10 @@
 .main-content {
     padding-left: var(--sidebar-w);
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content__body {
+    flex: 1;
 }
