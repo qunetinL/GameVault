@@ -20,12 +20,12 @@ TRUNCATE TABLE tags;
 TRUNCATE TABLE users;
 SET FOREIGN_KEY_CHECKS = 1;
 
--- 2. Insertion des Utilisateurs (mdp: 'password' pour tous via Bcrypt hash fictif)
--- Note: les mots de passe sont hachés 'password'
+-- 2. Insertion des Utilisateurs (mots de passe uniques, hachés via Bcrypt)
+-- AlexGamer: AlexGamer42#  |  SarahStream: SarahStream99@  |  AdminVault: GameVault2026!
 INSERT INTO users (username, email, password_hash, role) VALUES
-('AlexGamer', 'alex@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user'),
-('SarahStream', 'sarah@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user'),
-('AdminVault', 'admin@gamevault.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
+('AlexGamer', 'alex@example.com', '$2y$10$uImzfNSmgg1BX2aQPCDhUu50gd3MS3N2i2CeKTn/X60oaBBB55ZF6', 'user'),
+('SarahStream', 'sarah@example.com', '$2y$10$jwOwzcnj3X2lpvbR38LqwuaHmJUV1hxOStqhDgT7o6XAXCSKmn0Pm', 'user'),
+('AdminVault', 'admin@gamevault.com', '$2y$10$SQHftxz8x.UJQgVDEh8.JOjisR2QzzAYXx6mff3sJDBelB0fZ4nuu', 'admin');
 
 -- 3. Insertion des Tags
 INSERT INTO tags (name) VALUES 

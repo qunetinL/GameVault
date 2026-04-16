@@ -41,12 +41,14 @@ Pour tester l'application sans créer de compte, vous pouvez utiliser les identi
 
 ### Administrateur
 - **Email** : `admin@gamevault.com`
-- **Mot de passe** : `password`
+- **Mot de passe** : `GameVault2026!`
 - **Accès** : Donne accès au panneau `/admin` (gestion utilisateurs et jeux).
 
 ### Utilisateurs Standards
-- **Email** : `alex@example.com` / `sarah@example.com`
-- **Mot de passe** : `password`
+| Email | Mot de passe |
+|---|---|
+| `alex@example.com` | `AlexGamer42#` |
+| `sarah@example.com` | `SarahStream99@` |
 
 ## 📧 Vérification d'Email
 L'application requiert une vérification d'email lors de l'inscription. Tous les emails envoyés sont capturés par **Mailpit**. Pour vérifier un compte :
