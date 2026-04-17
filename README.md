@@ -50,6 +50,26 @@ Pour tester l'application sans créer de compte, vous pouvez utiliser les identi
 | `alex@example.com` | `AlexGamer42#` |
 | `sarah@example.com` | `SarahStream99@` |
 
+## 🌐 Mise en ligne (Cloudflare Tunnel)
+
+Pour rendre l'application accessible sur internet sans serveur dédié, vous pouvez utiliser **Cloudflare Tunnel** :
+
+1. Installez `cloudflared` :
+   ```bash
+   # Arch Linux
+   sudo pacman -S cloudflared
+   # Debian/Ubuntu
+   curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
+   sudo apt install cloudflared
+   ```
+2. Lancez le tunnel (les conteneurs Docker doivent être démarrés) :
+   ```bash
+   cloudflared tunnel --url http://localhost:8083
+   ```
+3. Une URL publique `https://xxxxx.trycloudflare.com` est générée automatiquement.
+
+> **Note** : l'URL change à chaque relance. Le tunnel reste actif tant que la commande tourne.
+
 ## 📧 Vérification d'Email
 L'application requiert une vérification d'email lors de l'inscription. Tous les emails envoyés sont capturés par **Mailpit**. Pour vérifier un compte :
 1. Inscrivez-vous sur l'application.
