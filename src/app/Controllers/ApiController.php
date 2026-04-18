@@ -7,6 +7,7 @@ use App\Models\Game;
 use App\Models\Session;
 use App\Models\Message;
 use App\Models\User;
+use App\Services\RawgService;
 
 class ApiController extends Controller
 {
@@ -14,6 +15,7 @@ class ApiController extends Controller
     private $sessionModel;
     private $messageModel;
     private $userModel;
+    private $rawgService;
 
     public function __construct()
     {
@@ -21,6 +23,7 @@ class ApiController extends Controller
         $this->sessionModel = new Session();
         $this->messageModel = new Message();
         $this->userModel = new User();
+        $this->rawgService = new RawgService();
 
         header('Content-Type: application/json');
 
@@ -191,6 +194,28 @@ class ApiController extends Controller
         // Vérifier chaque participant potentiel
         // Simplification : on retourne juste si d'autres écrivent
         $this->json(['typing_count' => $typingCount]);
+    }
+
+    // --- RAWG ---
+
+    public function rawgSearch()
+    {
+        $query = $_GET['q'] ?? '';
+        if (strlen(trim($query)) < 2) {
+            $this->json([]);
+        }
+
+        $redis = \App\Helpers\RedisHelper::getInstance();
+        $cacheKey = "rawg:search:" . md5($query);
+        $cached = $redis->getCache($cacheKey);
+
+        if ($cached !== null) {
+            $this->json($cached);
+        }
+
+        $results = $this->rawgService->search($query);
+        $redis->setCache($cacheKey, $results, 3600); // 1h cache
+        $this->json($results);
     }
 
     // --- STATS ---

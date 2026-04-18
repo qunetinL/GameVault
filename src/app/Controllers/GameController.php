@@ -68,15 +68,28 @@ class GameController extends Controller
             'added_by' => $_SESSION['user_id']
         ];
 
-        // Handle Image Upload
+        // Handle Image Upload (priorité au fichier uploadé)
         if (isset($_FILES['cover_image']) && $_FILES['cover_image']['error'] === UPLOAD_ERR_OK) {
             $data['cover_image'] = $this->handleUpload($_FILES['cover_image']);
+        } elseif (!empty($_POST['cover_image_url'])) {
+            // Télécharger l'image depuis RAWG
+            $data['cover_image'] = $this->downloadCoverImage($_POST['cover_image_url']);
         }
 
         $gameId = $this->gameModel->create($data);
 
-        // Auto-add to creator's collection
         if ($gameId) {
+            // Lier les tags RAWG
+            if (!empty($_POST['tags_rawg'])) {
+                $this->linkTags($gameId, $_POST['tags_rawg']);
+            }
+
+            // Lier les plateformes RAWG
+            if (!empty($_POST['platforms_rawg'])) {
+                $this->linkPlatforms($gameId, $_POST['platforms_rawg']);
+            }
+
+            // Auto-add to creator's collection
             $this->gameModel->addToCollection($_SESSION['user_id'], $gameId);
         }
 
@@ -156,6 +169,55 @@ class GameController extends Controller
             : '/game?id=' . $id;
         header('Location: ' . $safeDest);
         exit;
+    }
+
+    private function downloadCoverImage(string $url): ?string
+    {
+        $allowedHosts = ['media.rawg.io'];
+        $parsed = parse_url($url);
+        if (!$parsed || !in_array($parsed['host'] ?? '', $allowedHosts)) {
+            return null;
+        }
+
+        $imageData = @file_get_contents($url, false, stream_context_create([
+            'http' => ['timeout' => 10, 'header' => 'User-Agent: GameVault/1.0'],
+        ]));
+
+        if ($imageData === false) {
+            return null;
+        }
+
+        $uploadDir = __DIR__ . '/../../public/uploads/covers/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        $filename = bin2hex(random_bytes(16)) . '.jpg';
+        $targetFile = $uploadDir . $filename;
+
+        if (file_put_contents($targetFile, $imageData) !== false) {
+            return '/uploads/covers/' . $filename;
+        }
+
+        return null;
+    }
+
+    private function linkTags(int $gameId, string $tagsRawg): void
+    {
+        $tagNames = array_map('trim', explode(',', $tagsRawg));
+        foreach ($tagNames as $name) {
+            if (empty($name)) continue;
+            $this->gameModel->linkTag($gameId, $name);
+        }
+    }
+
+    private function linkPlatforms(int $gameId, string $platformsRawg): void
+    {
+        $platformNames = array_map('trim', explode(',', $platformsRawg));
+        foreach ($platformNames as $name) {
+            if (empty($name)) continue;
+            $this->gameModel->linkPlatform($gameId, $name);
+        }
     }
 
     private function handleUpload($file)

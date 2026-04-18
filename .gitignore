@@ -15,6 +15,9 @@ logs/
 # Docker
 docker/mysql_data/
 
+# Uploads (user-generated content)
+src/public/uploads/
+
 # Tests
 .phpunit.result.cache
 .phpunit.cache/
