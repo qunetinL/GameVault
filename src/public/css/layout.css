@@ -269,3 +269,28 @@
 .main-content__body {
     flex: 1;
 }
+
+/* Chat page: full height, no footer, no scroll on body */
+.page-chat {
+    overflow: hidden;
+    height: 100vh;
+}
+
+.page-chat .main-content {
+    height: 100vh;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.page-chat .main-content__body {
+    height: 100%;
+    overflow: hidden;
+}
+
+.page-chat .chat-app {
+    height: 100vh;
+}
+
+.page-chat .footer {
+    display: none;
+}

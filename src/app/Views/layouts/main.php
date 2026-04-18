@@ -12,6 +12,14 @@
     <style>
         .main-content { display: flex; flex-direction: column; }
         .main-content__body { flex: 1; }
+        /* Chat page: full height, no footer */
+        .page-chat { overflow: hidden; height: 100vh; }
+        .page-chat .main-content { height: 100vh; overflow: hidden; }
+        .page-chat .main-content__body { height: 100%; overflow: hidden; }
+        .page-chat .chat-app { height: 100% !important; }
+        .page-chat .chat-window { height: 100% !important; min-width: 0; }
+        .page-chat .chat-messages { flex: 1; min-height: 0; overflow-y: auto; }
+        .page-chat .footer { display: none; }
     </style>
     <?php if (isset($styles)):
         foreach ($styles as $style): ?>
@@ -19,7 +27,7 @@
         <?php endforeach; endif; ?>
 </head>
 
-<body>
+<body class="<?= htmlspecialchars($bodyClass ?? '', ENT_QUOTES, 'UTF-8') ?>">
     <aside class="sidebar" role="navigation" aria-label="Navigation principale">
         <a href="/" class="sidebar__logo" aria-label="GameVault — Accueil">
             <div class="sidebar__logo-icon" aria-hidden="true">

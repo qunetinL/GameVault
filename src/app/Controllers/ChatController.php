@@ -52,6 +52,7 @@ class ChatController extends Controller
             'contacts' => $contacts,
             'session_id' => $sessionId,
             'session' => $session,
+            'bodyClass' => 'page-chat',
             'scripts' => ['/js/chat.js?v=3']
         ]);
     }
