@@ -129,4 +129,24 @@ class Game extends Model
     {
         return $this->query("DELETE FROM collections WHERE user_id = ? AND game_id = ?", [$userId, $gameId]);
     }
+
+    public function linkTag(int $gameId, string $tagName): void
+    {
+        // Créer le tag s'il n'existe pas
+        $this->query("INSERT IGNORE INTO tags (name) VALUES (?)", [$tagName]);
+        $tag = $this->query("SELECT id FROM tags WHERE name = ?", [$tagName])->fetch();
+        if ($tag) {
+            $this->query("INSERT IGNORE INTO game_tags (game_id, tag_id) VALUES (?, ?)", [$gameId, $tag['id']]);
+        }
+    }
+
+    public function linkPlatform(int $gameId, string $platformName): void
+    {
+        // Créer la plateforme si elle n'existe pas
+        $this->query("INSERT IGNORE INTO platforms (name) VALUES (?)", [$platformName]);
+        $platform = $this->query("SELECT id FROM platforms WHERE name = ?", [$platformName])->fetch();
+        if ($platform) {
+            $this->query("INSERT IGNORE INTO game_platforms (game_id, platform_id) VALUES (?, ?)", [$gameId, $platform['id']]);
+        }
+    }
 }

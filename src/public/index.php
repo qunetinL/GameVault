@@ -50,6 +50,7 @@ $router->get('/api/sessions', 'ApiController@getSessions');
 $router->get('/api/messages/:id', 'ApiController@getNewMessages');
 $router->post('/api/messages', 'ApiController@sendMessage', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/api/stats', 'ApiController@getStats');
+$router->get('/api/rawg/search', 'ApiController@rawgSearch');
 
 $router->get('/stats', 'StatsController@index', [\App\Middleware\AuthMiddleware::class]);
 
