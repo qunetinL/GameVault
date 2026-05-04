@@ -106,6 +106,12 @@ class GameController extends Controller
             exit;
         }
 
+        // Only the creator or an admin can edit
+        if ($game['added_by'] != $_SESSION['user_id'] && ($_SESSION['user_role'] ?? '') !== 'admin') {
+            header('Location: /game?id=' . $id);
+            exit;
+        }
+
         return $this->render('games/edit', [
             'title' => 'Modifier ' . $game['title'],
             'game' => $game
@@ -115,6 +121,19 @@ class GameController extends Controller
     public function update()
     {
         $id = $_POST['id'] ?? $_GET['id'] ?? null;
+
+        $game = $this->gameModel->find($id);
+        if (!$game) {
+            header('Location: /games');
+            exit;
+        }
+
+        // Only the creator or an admin can update
+        if ($game['added_by'] != $_SESSION['user_id'] && ($_SESSION['user_role'] ?? '') !== 'admin') {
+            header('Location: /game?id=' . $id);
+            exit;
+        }
+
         $data = [
             'title' => $_POST['title'] ?? '',
             'description' => $_POST['description'] ?? '',
@@ -126,8 +145,6 @@ class GameController extends Controller
         if (isset($_FILES['cover_image']) && $_FILES['cover_image']['error'] === UPLOAD_ERR_OK) {
             $data['cover_image'] = $this->handleUpload($_FILES['cover_image']);
         } else {
-            // Keep existing image if no new one uploaded
-            $game = $this->gameModel->find($id);
             $data['cover_image'] = $game['cover_image'];
         }
 
@@ -139,6 +156,19 @@ class GameController extends Controller
     public function delete()
     {
         $id = $_POST['id'] ?? $_GET['id'] ?? null;
+
+        $game = $this->gameModel->find($id);
+        if (!$game) {
+            header('Location: /games');
+            exit;
+        }
+
+        // Only the creator or an admin can delete
+        if ($game['added_by'] != $_SESSION['user_id'] && ($_SESSION['user_role'] ?? '') !== 'admin') {
+            header('Location: /game?id=' . $id);
+            exit;
+        }
+
         $this->gameModel->delete($id);
         header('Location: /games');
         exit;

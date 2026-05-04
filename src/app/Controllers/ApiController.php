@@ -80,6 +80,11 @@ class ApiController extends Controller
             $this->json(['error' => 'Game not found'], 404);
         }
 
+        // Only the creator or an admin can update
+        if ($game['added_by'] != $_SESSION['user_id'] && ($_SESSION['user_role'] ?? '') !== 'admin') {
+            $this->json(['error' => 'Forbidden'], 403);
+        }
+
         $this->gameModel->update($id, $input);
         $this->json(['message' => 'Game updated']);
     }
@@ -89,6 +94,11 @@ class ApiController extends Controller
         $game = $this->gameModel->find($id);
         if (!$game) {
             $this->json(['error' => 'Game not found'], 404);
+        }
+
+        // Only the creator or an admin can delete
+        if ($game['added_by'] != $_SESSION['user_id'] && ($_SESSION['user_role'] ?? '') !== 'admin') {
+            $this->json(['error' => 'Forbidden'], 403);
         }
 
         $this->gameModel->delete($id);
@@ -190,9 +200,14 @@ class ApiController extends Controller
         }
 
         // Compter les utilisateurs en train d'écrire (hors l'utilisateur actuel)
+        $participants = $this->sessionModel->getParticipants($sessionId);
         $typingCount = 0;
-        // Vérifier chaque participant potentiel
-        // Simplification : on retourne juste si d'autres écrivent
+        foreach ($participants as $participant) {
+            if ($participant['user_id'] == $_SESSION['user_id']) continue;
+            if ($redis->getCache("typing:user:{$participant['user_id']}:$sessionId")) {
+                $typingCount++;
+            }
+        }
         $this->json(['typing_count' => $typingCount]);
     }
 
