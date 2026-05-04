@@ -142,7 +142,7 @@ class AuthController extends Controller
         ]);
 
         // Send verification email
-        $verifyUrl = ($_ENV['APP_URL'] ?? 'http://localhost:8083') . '/verify-email?token=' . $token;
+        $verifyUrl = ($_ENV['APP_URL'] ?? 'http://localhost:8080') . '/verify-email?token=' . $token;
         $emailBody = $this->renderEmail('emails/verify', [
             'username' => $username,
             'verifyUrl' => $verifyUrl
@@ -192,7 +192,7 @@ class AuthController extends Controller
             $token = bin2hex(random_bytes(32));
             $this->userModel->updateEmailToken($user['id'], $token);
 
-            $verifyUrl = ($_ENV['APP_URL'] ?? 'http://localhost:8083') . '/verify-email?token=' . $token;
+            $verifyUrl = ($_ENV['APP_URL'] ?? 'http://localhost:8080') . '/verify-email?token=' . $token;
             $emailBody = $this->renderEmail('emails/verify', [
                 'username' => $user['username'],
                 'verifyUrl' => $verifyUrl
@@ -240,7 +240,7 @@ class AuthController extends Controller
             $token = bin2hex(random_bytes(32));
             $this->userModel->setResetToken($user['id'], $token);
 
-            $resetUrl = ($_ENV['APP_URL'] ?? 'http://localhost:8083') . '/reset-password?token=' . $token;
+            $resetUrl = ($_ENV['APP_URL'] ?? 'http://localhost:8080') . '/reset-password?token=' . $token;
             $emailBody = $this->renderEmail('emails/reset-password', [
                 'username' => $user['username'],
                 'resetUrl' => $resetUrl
