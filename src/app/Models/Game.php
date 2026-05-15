@@ -58,13 +58,16 @@ class Game extends Model
         return $this->query(
             "SELECT g.*, c.notes, c.personal_rating, c.added_at as collection_added_at,
                     GROUP_CONCAT(DISTINCT t.name) as tags,
-                    GROUP_CONCAT(DISTINCT p.name) as platforms
-             FROM games g 
-             JOIN collections c ON g.id = c.game_id 
+                    GROUP_CONCAT(DISTINCT p.name) as platforms,
+                    GROUP_CONCAT(DISTINCT s.name) as user_stores
+             FROM games g
+             JOIN collections c ON g.id = c.game_id
              LEFT JOIN game_tags gt ON g.id = gt.game_id
              LEFT JOIN tags t ON gt.tag_id = t.id
              LEFT JOIN game_platforms gp ON g.id = gp.game_id
              LEFT JOIN platforms p ON gp.platform_id = p.id
+             LEFT JOIN collection_stores cs ON cs.collection_id = c.id
+             LEFT JOIN stores s ON cs.store_id = s.id
              WHERE c.user_id = ?
              GROUP BY g.id, c.id
              ORDER BY c.added_at DESC",

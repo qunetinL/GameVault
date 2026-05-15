@@ -76,8 +76,10 @@
                             <?= htmlspecialchars($game['title']) ?>
                         </h3>
                         <p class="game-card__genre">
-                            <?= htmlspecialchars($game['tags'] ?? 'Sans étiquette') ?> •
-                            <?= htmlspecialchars($game['platforms'] ?? 'Multi') ?>
+                            <?= htmlspecialchars($game['tags'] ?? 'Sans étiquette') ?>
+                        </p>
+                        <p class="game-card__genre" style="font-size: 0.75rem; opacity: 0.7;">
+                            <?= htmlspecialchars($game['user_stores'] ?? $game['platforms'] ?? 'Multi') ?>
                         </p>
                     </div>
                 </a>
