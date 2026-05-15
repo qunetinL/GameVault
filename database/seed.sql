@@ -3,6 +3,7 @@
 -- seed.sql
 -- ═══════════════════════════════════════════════════
 
+SET NAMES utf8mb4;
 USE gamevault;
 
 -- 1. Nettoyage (Ordre inverse des dépendances)
