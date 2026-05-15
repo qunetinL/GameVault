@@ -9,6 +9,7 @@
         </div>
 
         <div style="padding: 10px 20px;">
+            <?php if (($session['max_players'] ?? 0) >= 3 && empty($session['selected_game_id'])): ?>
             <div class="vote-panel">
                 <div class="vote-title">
                     <span>🗳️ Vote pour le jeu</span>
@@ -17,6 +18,7 @@
                     <p style="font-size: 0.8rem; opacity: 0.5;">Chargement des votes...</p>
                 </div>
             </div>
+            <?php endif; ?>
             <h3>Contacts</h3>
         </div>
 
