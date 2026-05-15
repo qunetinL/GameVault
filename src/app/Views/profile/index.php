@@ -67,6 +67,27 @@
 
     </div>
 
+    <!-- Mes bibliotheques -->
+    <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+        <div style="background: var(--card); padding: 2rem; border-radius: 1rem; border: 1px solid var(--border);">
+            <h2 style="margin-bottom: 1rem;">Mes bibliothèques</h2>
+            <p style="margin-bottom: 1rem; opacity: 0.8;">Cochez les plateformes sur lesquelles vous avez un compte.</p>
+            <form action="/profile/stores" method="POST">
+                <?php \App\Helpers\CsrfHelper::insertField(); ?>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem;">
+                    <?php foreach ($allStores as $store): ?>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; border-radius: 0.5rem; border: 1px solid var(--border); transition: background 0.2s;">
+                            <input type="checkbox" name="stores[]" value="<?= $store['id'] ?>"
+                                <?= in_array($store['id'], $userStoreIds) ? 'checked' : '' ?>>
+                            <span><?= htmlspecialchars($store['name']) ?></span>
+                        </label>
+                    <?php endforeach; ?>
+                </div>
+                <button type="submit" class="btn btn--primary">Enregistrer mes bibliothèques</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Actions RGPD -->
     <div style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
 

@@ -7,6 +7,7 @@ use App\Models\Game;
 use App\Models\Session;
 use App\Models\Message;
 use App\Models\User;
+use App\Models\Store;
 use App\Services\RawgService;
 
 class ApiController extends Controller
@@ -176,6 +177,34 @@ class ApiController extends Controller
 
         $this->sessionModel->castVote($input['session_id'], $_SESSION['user_id'], $input['game_id']);
         $this->json(['message' => 'Vote recorded']);
+    }
+
+    // --- SESSION STORES (who owns which game on which store) ---
+
+    public function getSessionStores($sessionId)
+    {
+        $storeModel = new Store();
+        $owners = $storeModel->getSessionGameOwners((int) $sessionId);
+
+        // Group by game_id
+        $result = [];
+        foreach ($owners as $row) {
+            $gameId = $row['game_id'];
+            if (!isset($result[$gameId])) {
+                $result[$gameId] = [
+                    'game_id' => $gameId,
+                    'title' => $row['title'],
+                    'owners' => []
+                ];
+            }
+            $result[$gameId]['owners'][] = [
+                'user_id' => $row['user_id'],
+                'username' => $row['username'],
+                'stores' => $row['stores'] ?: ''
+            ];
+        }
+
+        $this->json(array_values($result));
     }
 
     // --- TYPING ---

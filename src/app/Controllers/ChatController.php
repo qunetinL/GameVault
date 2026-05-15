@@ -6,6 +6,7 @@ use App\Core\Controller;
 use App\Models\User;
 use App\Models\Message;
 use App\Models\Session;
+use App\Models\Store;
 
 class ChatController extends Controller
 {
@@ -41,7 +42,12 @@ class ChatController extends Controller
         if (!$sessionId && !empty($contacts)) {
             $sessionId = $contacts[0]['id'];
         }
-        $sessionId = $sessionId ?: 1;
+
+        // Si aucune session disponible, rediriger vers la liste
+        if (!$sessionId) {
+            header('Location: /sessions');
+            exit;
+        }
 
         // Charger la session courante
         $session = $sessionModel->find($sessionId);

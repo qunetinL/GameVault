@@ -49,6 +49,7 @@ $router->delete('/api/games/:id', 'ApiController@deleteGame', [\App\Middleware\A
 $router->get('/api/sessions', 'ApiController@getSessions');
 $router->get('/api/messages/:id', 'ApiController@getNewMessages');
 $router->post('/api/messages', 'ApiController@sendMessage', [\App\Middleware\AuthMiddleware::class]);
+$router->get('/api/session-stores/:id', 'ApiController@getSessionStores');
 $router->get('/api/stats', 'ApiController@getStats');
 $router->get('/api/rawg/search', 'ApiController@rawgSearch');
 
@@ -61,6 +62,7 @@ $router->post('/admin/game/update', 'AdminController@updateGame', [\App\Middlewa
 $router->get('/profile', 'ProfileController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->post('/profile/update', 'ProfileController@update', [\App\Middleware\AuthMiddleware::class, \App\Middleware\CSRFMiddleware::class]);
 $router->post('/profile/delete', 'ProfileController@delete', [\App\Middleware\AuthMiddleware::class, \App\Middleware\CSRFMiddleware::class]);
+$router->post('/profile/stores', 'ProfileController@updateStores', [\App\Middleware\AuthMiddleware::class, \App\Middleware\CSRFMiddleware::class]);
 $router->get('/profile/export', 'ProfileController@export', [\App\Middleware\AuthMiddleware::class]);
 
 // Legal pages (RGPD)
@@ -76,6 +78,7 @@ $router->post('/game/add', 'GameController@store', [\App\Middleware\AuthMiddlewa
 $router->get('/game/edit', 'GameController@edit', [\App\Middleware\AuthMiddleware::class]);
 $router->post('/game/edit', 'GameController@update', [\App\Middleware\AuthMiddleware::class]);
 $router->post('/game/delete', 'GameController@delete', [\App\Middleware\AuthMiddleware::class]);
+$router->post('/game/stores', 'GameController@updateStores', [\App\Middleware\AuthMiddleware::class, \App\Middleware\CSRFMiddleware::class]);
 $router->post('/game/toggle', 'GameController@toggleCollection', [\App\Middleware\AuthMiddleware::class]);
 
 $app = new App($router);

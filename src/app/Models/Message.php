@@ -29,10 +29,14 @@ class Message extends Model
     public function getNewMessages($sessionId, $lastId)
     {
         return $this->query(
-            "SELECT m.*, u.username 
-             FROM messages m 
-             JOIN users u ON m.sender_id = u.id 
-             WHERE m.session_id = ? AND m.id > ? 
+            "SELECT m.*, u.username,
+                    (SELECT GROUP_CONCAT(s.name ORDER BY s.name SEPARATOR ', ')
+                     FROM user_stores us
+                     JOIN stores s ON us.store_id = s.id
+                     WHERE us.user_id = m.sender_id) as user_stores
+             FROM messages m
+             JOIN users u ON m.sender_id = u.id
+             WHERE m.session_id = ? AND m.id > ?
              ORDER BY m.created_at ASC",
             [$sessionId, $lastId]
         )->fetchAll();

@@ -7,6 +7,9 @@ USE gamevault;
 
 -- 1. Nettoyage (Ordre inverse des dépendances)
 SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE collection_stores;
+TRUNCATE TABLE user_stores;
+TRUNCATE TABLE stores;
 TRUNCATE TABLE votes;
 TRUNCATE TABLE messages;
 TRUNCATE TABLE invitations;
@@ -27,7 +30,19 @@ INSERT INTO users (username, email, password_hash, role) VALUES
 ('SarahStream', 'sarah@example.com', '$2y$10$jwOwzcnj3X2lpvbR38LqwuaHmJUV1hxOStqhDgT7o6XAXCSKmn0Pm', 'user'),
 ('AdminVault', 'admin@gamevault.com', '$2y$10$SQHftxz8x.UJQgVDEh8.JOjisR2QzzAYXx6mff3sJDBelB0fZ4nuu', 'admin');
 
--- 3. Insertion des Tags
+-- 3. Insertion des Stores (bibliotheques digitales)
+INSERT INTO stores (name, icon) VALUES
+('Steam', 'steam'),
+('Epic Games Store', 'epic'),
+('GOG', 'gog'),
+('PlayStation Store', 'playstation'),
+('Xbox / Microsoft Store', 'xbox'),
+('Nintendo eShop', 'nintendo'),
+('Ubisoft Connect', 'ubisoft'),
+('EA App', 'ea'),
+('Autre', 'other');
+
+-- 4. Insertion des Tags
 INSERT INTO tags (name) VALUES 
 ('RPG'), ('Action'), ('FPS'), ('Aventure'), ('Indie'), ('Strategie'), ('Sport');
 

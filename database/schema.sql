@@ -164,4 +164,49 @@ CREATE TABLE IF NOT EXISTS votes (
     CONSTRAINT fk_votes_game FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+-- ─────────────────────────────────────────────────
+-- TABLE : stores (bibliotheques/magasins digitaux)
+-- ─────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS stores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    icon VARCHAR(50) DEFAULT NULL
+) ENGINE=InnoDB;
+
+-- ─────────────────────────────────────────────────
+-- TABLE : user_stores (stores lies au profil)
+-- ─────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS user_stores (
+    user_id INT NOT NULL,
+    store_id INT NOT NULL,
+    PRIMARY KEY (user_id, store_id),
+    CONSTRAINT fk_user_stores_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_user_stores_store FOREIGN KEY (store_id) REFERENCES stores(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ─────────────────────────────────────────────────
+-- TABLE : collection_stores (store par jeu possede)
+-- ─────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS collection_stores (
+    collection_id INT NOT NULL,
+    store_id INT NOT NULL,
+    PRIMARY KEY (collection_id, store_id),
+    CONSTRAINT fk_collection_stores_collection FOREIGN KEY (collection_id) REFERENCES collections(id) ON DELETE CASCADE,
+    CONSTRAINT fk_collection_stores_store FOREIGN KEY (store_id) REFERENCES stores(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ─────────────────────────────────────────────────
+-- Donnees initiales : stores
+-- ─────────────────────────────────────────────────
+INSERT IGNORE INTO stores (name, icon) VALUES
+    ('Steam', 'steam'),
+    ('Epic Games Store', 'epic'),
+    ('GOG', 'gog'),
+    ('PlayStation Store', 'playstation'),
+    ('Xbox / Microsoft Store', 'xbox'),
+    ('Nintendo eShop', 'nintendo'),
+    ('Ubisoft Connect', 'ubisoft'),
+    ('EA App', 'ea'),
+    ('Autre', 'other');
+
 SET FOREIGN_KEY_CHECKS = 1;

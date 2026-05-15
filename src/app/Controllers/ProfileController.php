@@ -4,25 +4,48 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Models\User;
+use App\Models\Store;
 use App\Helpers\RedisHelper;
 
 class ProfileController extends Controller
 {
     private $userModel;
+    private $storeModel;
 
     public function __construct()
     {
         $this->userModel = new User();
+        $this->storeModel = new Store();
     }
 
     public function index()
     {
-        $user = $this->userModel->findById($_SESSION['user_id']);
+        $userId = $_SESSION['user_id'];
+        $user = $this->userModel->findById($userId);
+        $allStores = $this->storeModel->findAll();
+        $userStores = $this->storeModel->getUserStores($userId);
+        $userStoreIds = array_column($userStores, 'id');
 
         return $this->render('profile/index', [
             'title' => 'Mon Profil — GameVault',
             'user' => $user,
+            'allStores' => $allStores,
+            'userStoreIds' => $userStoreIds,
         ]);
+    }
+
+    public function updateStores()
+    {
+        $userId = $_SESSION['user_id'];
+        $storeIds = $_POST['stores'] ?? [];
+
+        // Sanitize: only keep integer values
+        $storeIds = array_map('intval', array_filter($storeIds, 'is_numeric'));
+
+        $this->storeModel->setUserStores($userId, $storeIds);
+
+        header('Location: /profile?success=1');
+        exit;
     }
 
     public function update()

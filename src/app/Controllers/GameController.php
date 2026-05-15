@@ -4,14 +4,17 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Models\Game;
+use App\Models\Store;
 
 class GameController extends Controller
 {
     private $gameModel;
+    private $storeModel;
 
     public function __construct()
     {
         $this->gameModel = new Game();
+        $this->storeModel = new Store();
         // Simple auth check for now
         if (!isset($_SESSION['user_id'])) {
             header('Location: /login');
@@ -44,12 +47,26 @@ class GameController extends Controller
             exit;
         }
 
-        $inCollection = $this->gameModel->isInCollection($_SESSION['user_id'], $id);
+        $userId = $_SESSION['user_id'];
+        $inCollection = $this->gameModel->isInCollection($userId, $id);
+
+        $allStores = [];
+        $gameStoreIds = [];
+        if ($inCollection) {
+            $allStores = $this->storeModel->findAll();
+            $collectionId = $this->storeModel->getCollectionId($userId, $id);
+            if ($collectionId) {
+                $gameStores = $this->storeModel->getCollectionStores($collectionId);
+                $gameStoreIds = array_column($gameStores, 'id');
+            }
+        }
 
         return $this->render('games/show', [
             'title' => $game['title'] . ' — GameVault',
             'game' => $game,
-            'inCollection' => $inCollection
+            'inCollection' => $inCollection,
+            'allStores' => $allStores,
+            'gameStoreIds' => $gameStoreIds,
         ]);
     }
 
@@ -171,6 +188,30 @@ class GameController extends Controller
 
         $this->gameModel->delete($id);
         header('Location: /games');
+        exit;
+    }
+
+    public function updateStores()
+    {
+        $gameId = $_POST['game_id'] ?? $_GET['id'] ?? null;
+        $userId = $_SESSION['user_id'];
+        $storeIds = $_POST['stores'] ?? [];
+
+        if (!$gameId) {
+            header('Location: /games');
+            exit;
+        }
+
+        $collectionId = $this->storeModel->getCollectionId($userId, (int) $gameId);
+        if (!$collectionId) {
+            header('Location: /game?id=' . (int) $gameId);
+            exit;
+        }
+
+        $storeIds = array_map('intval', array_filter($storeIds, 'is_numeric'));
+        $this->storeModel->setCollectionStores($collectionId, $storeIds);
+
+        header('Location: /game?id=' . (int) $gameId);
         exit;
     }
 

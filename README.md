@@ -15,25 +15,17 @@ Plateforme communautaire de gestion de collections de jeux vidéo et d'organisat
 - **Bases de données** : MySQL 8.x
 - **Déploiement** : Docker, docker-compose, GitHub Actions
 
-## Installation (Développement avec Docker)
+## Installation rapide
 
-1. Clonez ce dépôt :
-   ```bash
-   git clone https://github.com/votre-utilisateur/GameVault.git
-   ```
-2. (Optionnel) Copiez le fichier d'environnement et ajustez les ports si besoin :
-   ```bash
-   cp .env.example .env
-   # Modifiez APP_PORT, PHPMYADMIN_PORT, etc. si les ports par défaut sont déjà utilisés
-   ```
-3. Lancez les conteneurs :
-   ```bash
-   docker-compose up -d --build
-   ```
-4. Accès aux services :
-   - 🌐 **Application** : `http://localhost:8080` (ou port défini dans `APP_PORT`)
-   - 🐘 **PhpMyAdmin** : `http://localhost:8081` (ou port défini dans `PHPMYADMIN_PORT`)
-   - 📧 **Mailpit (Emails)** : `http://localhost:8025` (ou port défini dans `MAILPIT_UI_PORT`)
+```bash
+git clone https://github.com/qunetinL/GameVault.git
+cd GameVault
+./setup.sh
+```
+
+Le script configure automatiquement Docker, la base de données et les dépendances.
+
+📖 **Guide complet de déploiement** : voir [DEPLOYMENT.md](DEPLOYMENT.md)
 
 ## 🔑 Comptes de Test et Administration
 
@@ -50,31 +42,8 @@ Pour tester l'application sans créer de compte, vous pouvez utiliser les identi
 | `alex@example.com` | `AlexGamer42#` |
 | `sarah@example.com` | `SarahStream99@` |
 
-## 🌐 Mise en ligne (Cloudflare Tunnel)
-
-Pour rendre l'application accessible sur internet sans serveur dédié, vous pouvez utiliser **Cloudflare Tunnel** :
-
-1. Installez `cloudflared` :
-   ```bash
-   # Arch Linux
-   sudo pacman -S cloudflared
-   # Debian/Ubuntu
-   curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | sudo tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
-   sudo apt install cloudflared
-   ```
-2. Lancez le tunnel (les conteneurs Docker doivent être démarrés) :
-   ```bash
-   cloudflared tunnel --url http://localhost:8083
-   ```
-3. Une URL publique `https://xxxxx.trycloudflare.com` est générée automatiquement.
-
-> **Note** : l'URL change à chaque relance. Le tunnel reste actif tant que la commande tourne.
-
 ## 📧 Vérification d'Email
-L'application requiert une vérification d'email lors de l'inscription. Tous les emails envoyés sont capturés par **Mailpit**. Pour vérifier un compte :
-1. Inscrivez-vous sur l'application.
-2. Allez sur `http://localhost:8025`.
-3. Cliquez sur le lien de confirmation dans l'email reçu.
+L'application requiert une vérification d'email lors de l'inscription. Tous les emails sont capturés par **Mailpit** (`http://localhost:8025`).
 
 ---
-> Les ports sont configurables via le fichier `.env` (`APP_PORT`, `PHPMYADMIN_PORT`, `MYSQL_PORT`, `REDIS_PORT`, `MAILPIT_UI_PORT`).
+> Pour la mise en ligne, la configuration des ports et plus de détails, voir [DEPLOYMENT.md](DEPLOYMENT.md).

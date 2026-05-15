@@ -52,6 +52,26 @@
                 <!-- Add more info as needed -->
             </div>
 
+            <?php if ($inCollection): ?>
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <h3 style="margin-bottom: 1rem;">Je possède ce jeu sur</h3>
+                <form action="/game/stores?id=<?= $game['id'] ?>" method="POST">
+                    <?php \App\Helpers\CsrfHelper::insertField(); ?>
+                    <input type="hidden" name="game_id" value="<?= $game['id'] ?>">
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+                        <?php foreach ($allStores as $store): ?>
+                            <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; padding: 0.4rem 0.8rem; border-radius: 0.5rem; border: 1px solid var(--border); font-size: 0.9rem; transition: background 0.2s;">
+                                <input type="checkbox" name="stores[]" value="<?= $store['id'] ?>"
+                                    <?= in_array($store['id'], $gameStoreIds) ? 'checked' : '' ?>>
+                                <span><?= htmlspecialchars($store['name']) ?></span>
+                            </label>
+                        <?php endforeach; ?>
+                    </div>
+                    <button type="submit" class="btn btn--primary" style="font-size: 0.9rem;">Enregistrer</button>
+                </form>
+            </div>
+            <?php endif; ?>
+
             <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
                 <form action="/game/delete?id=<?= $game['id'] ?>" method="POST"
                     onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce jeu du catalogue ?');">

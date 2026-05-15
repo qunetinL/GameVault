@@ -51,7 +51,7 @@
             </div>
 
             <div class="form-actions" style="display:flex; justify-content: flex-end; gap: 1rem;">
-                <a href="/games/<?= $game['id'] ?>" class="btn btn--secondary">Annuler</a>
+                <a href="/game?id=<?= $game['id'] ?>" class="btn btn--secondary">Annuler</a>
                 <button type="submit" class="btn btn--primary">Enregistrer les modifications</button>
             </div>
         </form>

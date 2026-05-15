@@ -63,8 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const time = new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+        const storeBadges = msg.user_stores
+            ? msg.user_stores.split(', ').map(s => `<span style="font-size: 0.6rem; padding: 1px 4px; border-radius: 3px; background: rgba(255,255,255,0.1); margin-left: 3px;">${escapeHtml(s)}</span>`).join('')
+            : '';
+
         msgDiv.innerHTML = `
-            ${!isMe ? `<span style="font-size: 0.7rem; display: block; opacity: 0.7; margin-bottom: 2px;">${escapeHtml(msg.username)}</span>` : ''}
+            ${!isMe ? `<span style="font-size: 0.7rem; display: block; opacity: 0.7; margin-bottom: 2px;">${escapeHtml(msg.username)}${storeBadges}</span>` : ''}
             <p></p>
             <span class="message-time">${time}</span>
         `;
@@ -122,14 +126,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    let gameOwners = {};
+
+    const fetchSessionStores = async () => {
+        if (!isTabVisible) return;
+        try {
+            const response = await fetch(`/api/session-stores/${sessionId}`);
+            if (!response.ok) return;
+            const data = await response.json();
+            gameOwners = {};
+            data.forEach(item => {
+                gameOwners[item.game_id] = item.owners;
+            });
+        } catch (error) {
+            console.error('Error fetching session stores:', error);
+        }
+    };
+
     const renderVotes = (votes) => {
         voteOptions.innerHTML = '';
         votes.forEach(vote => {
             const div = document.createElement('div');
             div.className = 'vote-option';
+
+            let ownersHtml = '';
+            const owners = gameOwners[vote.game_id];
+            if (owners && owners.length > 0) {
+                const ownerParts = owners.map(o => {
+                    const stores = o.stores ? `: ${escapeHtml(o.stores)}` : '';
+                    return `${escapeHtml(o.username)}${stores}`;
+                });
+                ownersHtml = `<div style="font-size: 0.7rem; opacity: 0.6; margin-top: 2px;">${ownerParts.join(' | ')}</div>`;
+            }
+
             div.innerHTML = `
-                <span>${escapeHtml(vote.title)}</span>
-                <span class="vote-count">${vote.vote_count} vote(s)</span>
+                <div>
+                    <span>${escapeHtml(vote.title)}</span>
+                    <span class="vote-count">${vote.vote_count} vote(s)</span>
+                </div>
+                ${ownersHtml}
             `;
             div.onclick = () => castVote(vote.game_id);
             voteOptions.appendChild(div);
@@ -211,11 +246,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial load
     fetchMessages();
-    fetchVotes();
+    fetchSessionStores().then(() => fetchVotes());
 
     // Polling intervals (réduits quand l'onglet est inactif via isTabVisible)
-    setInterval(fetchMessages, 3000);  // Poll messages every 3s (était 2s)
-    setInterval(fetchVotes, 10000);    // Poll votes every 10s (était 5s)
+    setInterval(fetchMessages, 3000);  // Poll messages every 3s
+    setInterval(() => fetchSessionStores().then(() => fetchVotes()), 10000); // Poll votes + stores every 10s
     setInterval(() => {
         if (isTabVisible) updateTypingStatus(isTyping);
     }, 4000);
