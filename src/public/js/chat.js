@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             : '';
 
         msgDiv.innerHTML = `
-            ${!isMe ? `<span style="font-size: 0.7rem; display: block; opacity: 0.7; margin-bottom: 2px;">${escapeHtml(msg.username)}${storeBadges}</span>` : ''}
+            ${!isMe ? `<span style="font-size: 0.7rem; display: block; opacity: 0.7; margin-bottom: 2px;"><a href="/user?id=${msg.sender_id}" style="color: inherit; text-decoration: underline; text-underline-offset: 2px;">${escapeHtml(msg.username)}</a>${storeBadges}</span>` : ''}
             <p></p>
             <span class="message-time">${time}</span>
         `;

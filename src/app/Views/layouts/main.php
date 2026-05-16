@@ -50,6 +50,7 @@
                 ['href' => '/sessions', 'label' => 'Sessions', 'icon' => 'calendar'],
                 ['href' => '/stats', 'label' => 'Statistiques', 'icon' => 'bar-chart'],
                 ['href' => '/chat', 'label' => 'Chat', 'icon' => 'message'],
+                ['href' => '/users', 'label' => 'Membres', 'icon' => 'users'],
             ];
             if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
                 $navItems[] = ['href' => '/admin', 'label' => 'Admin', 'icon' => 'shield'];
@@ -63,6 +64,7 @@
                 'bar-chart' => '<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>',
                 'shield' => '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
                 'user' => '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+                'users' => '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
             ];
             $currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 

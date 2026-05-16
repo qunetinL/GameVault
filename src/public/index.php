@@ -70,6 +70,8 @@ $router->get('/privacy', 'LegalController@privacy');
 $router->get('/cgu', 'LegalController@cgu');
 $router->get('/mentions-legales', 'LegalController@mentions');
 
+$router->get('/users', 'UserController@index', [\App\Middleware\AuthMiddleware::class]);
+$router->get('/user', 'UserController@show', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/dashboard', 'DashboardController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/games', 'GameController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/game', 'GameController@show', [\App\Middleware\AuthMiddleware::class]);
