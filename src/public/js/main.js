@@ -68,6 +68,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (document.getElementById('unread-badge')) {
         updateUnreadBadge();
-        setInterval(updateUnreadBadge, 15000); // 15s poll for badge
+        setInterval(updateUnreadBadge, 15000);
+    }
+
+    /* ── Friend Requests Badge Poll ──────────────────── */
+    const updateFriendBadge = async () => {
+        const badge = document.getElementById('friend-requests-badge');
+        if (!badge) return;
+
+        try {
+            const resp = await fetch('/api/friends/pending');
+            if (!resp.ok) return;
+            const data = await resp.json();
+            if (data.count > 0) {
+                badge.innerText = data.count;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        } catch (e) {}
+    };
+
+    if (document.getElementById('friend-requests-badge')) {
+        updateFriendBadge();
+        setInterval(updateFriendBadge, 15000);
     }
 });

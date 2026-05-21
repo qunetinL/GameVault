@@ -72,6 +72,12 @@ $router->get('/mentions-legales', 'LegalController@mentions');
 
 $router->get('/users', 'UserController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/user', 'UserController@show', [\App\Middleware\AuthMiddleware::class]);
+
+// Friends
+$router->post('/friend/request', 'FriendController@request', [\App\Middleware\AuthMiddleware::class, \App\Middleware\CSRFMiddleware::class]);
+$router->post('/friend/respond', 'FriendController@respond', [\App\Middleware\AuthMiddleware::class, \App\Middleware\CSRFMiddleware::class]);
+$router->post('/friend/remove', 'FriendController@remove', [\App\Middleware\AuthMiddleware::class, \App\Middleware\CSRFMiddleware::class]);
+$router->get('/api/friends/pending', 'FriendController@pendingCount', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/dashboard', 'DashboardController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/games', 'GameController@index', [\App\Middleware\AuthMiddleware::class]);
 $router->get('/game', 'GameController@show', [\App\Middleware\AuthMiddleware::class]);

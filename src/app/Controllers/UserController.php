@@ -6,6 +6,7 @@ use App\Core\Controller;
 use App\Models\User;
 use App\Models\Game;
 use App\Models\Store;
+use App\Models\Friendship;
 
 class UserController extends Controller
 {
@@ -56,11 +57,27 @@ class UserController extends Controller
         $userStores = $this->storeModel->getUserStores($id);
         $games = $this->gameModel->getByUserCollection($id);
 
+        $friendModel = new Friendship();
+        $currentUserId = $_SESSION['user_id'];
+        $friendStatus = ($currentUserId != $id) ? $friendModel->getStatus($currentUserId, (int) $id) : null;
+        $isSender = ($friendStatus === 'pending') ? $friendModel->isSender($currentUserId, (int) $id) : false;
+        $friendshipId = null;
+        if ($friendStatus === 'pending' && !$isSender) {
+            $row = $friendModel->query(
+                "SELECT id FROM friendships WHERE sender_id = ? AND receiver_id = ? AND status = 'pending'",
+                [(int) $id, $currentUserId]
+            )->fetch();
+            $friendshipId = $row ? $row['id'] : null;
+        }
+
         return $this->render('users/show', [
             'title' => $user['username'] . ' — GameVault',
             'profileUser' => $user,
             'userStores' => $userStores,
             'games' => $games,
+            'friendStatus' => $friendStatus,
+            'isSender' => $isSender,
+            'friendshipId' => $friendshipId,
         ]);
     }
 }

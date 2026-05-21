@@ -8,6 +8,7 @@ USE gamevault;
 
 -- 1. Nettoyage (Ordre inverse des dépendances)
 SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE friendships;
 TRUNCATE TABLE collection_stores;
 TRUNCATE TABLE user_stores;
 TRUNCATE TABLE stores;
@@ -139,7 +140,14 @@ INSERT INTO collection_stores (collection_id, store_id) VALUES
 (12, 1);       -- Admin a It Takes Two sur Steam
 
 -- ─────────────────────────────────────────────────
--- 12. Sessions Gaming
+-- 12. Friendships (amis)
+-- ─────────────────────────────────────────────────
+INSERT INTO friendships (sender_id, receiver_id, status) VALUES
+(1, 2, 'accepted'),    -- Alex et Sarah sont amis
+(3, 1, 'pending');      -- Admin a envoyé une demande à Alex (en attente)
+
+-- ─────────────────────────────────────────────────
+-- 13. Sessions Gaming
 -- ─────────────────────────────────────────────────
 INSERT INTO sessions (title, description, scheduled_at, max_players, status, organizer_id, selected_game_id) VALUES
 ('Soirée Elden Ring COOP', 'On va essayer de battre Malenia ensemble.', '2026-06-20 21:00:00', 3, 'planned', 1, 1),

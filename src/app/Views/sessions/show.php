@@ -110,11 +110,29 @@
 
                 <?php if ($session['organizer_id'] === $_SESSION['user_id']): ?>
                     <hr style="margin: 1.5rem 0; opacity: 0.1;">
+
+                    <?php if (!empty($friends)): ?>
+                    <form action="/session/invite" method="POST" style="margin-bottom: 1rem;">
+                        <?php \App\Helpers\CsrfHelper::insertField(); ?>
+                        <input type="hidden" name="session_id" value="<?= $session['id'] ?>">
+                        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: 500;">Inviter un ami :</label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <select name="username" class="form-input" style="flex: 1; font-size: 0.9rem;">
+                                <?php foreach ($friends as $friend): ?>
+                                    <option value="<?= htmlspecialchars($friend['username']) ?>">
+                                        <?= htmlspecialchars($friend['username']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <button type="submit" class="btn btn--sm btn--primary">Inviter</button>
+                        </div>
+                    </form>
+                    <?php endif; ?>
+
                     <form action="/session/invite" method="POST">
                         <?php \App\Helpers\CsrfHelper::insertField(); ?>
                         <input type="hidden" name="session_id" value="<?= $session['id'] ?>">
-                        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: 500;">Inviter
-                            un joueur :</label>
+                        <label style="display: block; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: 500;">Inviter par pseudo :</label>
                         <div style="display: flex; gap: 0.5rem;">
                             <input type="text" name="username" class="form-input" placeholder="Pseudo"
                                 style="width: 100%; font-size: 0.9rem;">

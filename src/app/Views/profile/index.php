@@ -67,6 +67,53 @@
 
     </div>
 
+    <!-- Demandes d'amis + Liste d'amis -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+
+        <?php if (!empty($pendingRequests)): ?>
+        <div style="background: var(--card); padding: 2rem; border-radius: 1rem; border: 1px solid rgba(108, 92, 231, 0.3);">
+            <h2 style="margin-bottom: 1rem;">Demandes d'amis (<?= count($pendingRequests) ?>)</h2>
+            <?php foreach ($pendingRequests as $req): ?>
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+                    <a href="/user?id=<?= $req['user_id'] ?>" style="color: inherit; text-decoration: none; font-weight: 600;">
+                        <?= htmlspecialchars($req['username']) ?>
+                    </a>
+                    <form action="/friend/respond" method="POST" style="display: flex; gap: 0.5rem;">
+                        <?php \App\Helpers\CsrfHelper::insertField(); ?>
+                        <input type="hidden" name="friendship_id" value="<?= $req['friendship_id'] ?>">
+                        <button type="submit" name="status" value="accepted" class="btn btn--primary" style="font-size: 0.85rem; padding: 0.3rem 0.8rem;">Accepter</button>
+                        <button type="submit" name="status" value="rejected" class="btn btn--secondary" style="font-size: 0.85rem; padding: 0.3rem 0.8rem;">Refuser</button>
+                    </form>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+        <div style="background: var(--card); padding: 2rem; border-radius: 1rem; border: 1px solid var(--border);">
+            <h2 style="margin-bottom: 1rem;">Mes amis (<?= count($friends) ?>)</h2>
+            <?php if (empty($friends)): ?>
+                <p style="opacity: 0.6;">Vous n'avez pas encore d'amis. Visitez la page <a href="/users" style="color: var(--primary);">Membres</a> pour en trouver !</p>
+            <?php else: ?>
+                <?php foreach ($friends as $friend): ?>
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+                        <a href="/user?id=<?= $friend['id'] ?>" style="color: inherit; text-decoration: none; display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--accent, #6c5ce7); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 700; color: white;">
+                                <?= strtoupper(substr($friend['username'], 0, 1)) ?>
+                            </div>
+                            <span style="font-weight: 600;"><?= htmlspecialchars($friend['username']) ?></span>
+                        </a>
+                        <form action="/friend/remove" method="POST">
+                            <?php \App\Helpers\CsrfHelper::insertField(); ?>
+                            <input type="hidden" name="friend_id" value="<?= $friend['id'] ?>">
+                            <button type="submit" class="btn btn--secondary" style="font-size: 0.8rem; padding: 0.3rem 0.8rem;" onclick="return confirm('Supprimer cet ami ?')">Retirer</button>
+                        </form>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+
+    </div>
+
     <!-- Mes bibliotheques -->
     <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1.5rem;">
         <div style="background: var(--card); padding: 2rem; border-radius: 1rem; border: 1px solid var(--border);">

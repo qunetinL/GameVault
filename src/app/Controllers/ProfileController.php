@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Models\User;
 use App\Models\Store;
+use App\Models\Friendship;
 use App\Helpers\RedisHelper;
 
 class ProfileController extends Controller
@@ -26,11 +27,17 @@ class ProfileController extends Controller
         $userStores = $this->storeModel->getUserStores($userId);
         $userStoreIds = array_column($userStores, 'id');
 
+        $friendModel = new Friendship();
+        $pendingRequests = $friendModel->getPendingRequests($userId);
+        $friends = $friendModel->getFriends($userId);
+
         return $this->render('profile/index', [
             'title' => 'Mon Profil — GameVault',
             'user' => $user,
             'allStores' => $allStores,
             'userStoreIds' => $userStoreIds,
+            'pendingRequests' => $pendingRequests,
+            'friends' => $friends,
         ]);
     }
 

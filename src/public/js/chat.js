@@ -67,8 +67,12 @@ document.addEventListener('DOMContentLoaded', () => {
             ? msg.user_stores.split(', ').map(s => `<span style="font-size: 0.6rem; padding: 1px 4px; border-radius: 3px; background: rgba(255,255,255,0.1); margin-left: 3px;">${escapeHtml(s)}</span>`).join('')
             : '';
 
+        const addFriendBtn = !isMe
+            ? `<button class="chat-add-friend" data-user-id="${msg.sender_id}" title="Ajouter en ami" style="background:none;border:none;cursor:pointer;color:inherit;opacity:0.5;font-size:0.7rem;margin-left:4px;padding:0 2px;">+</button>`
+            : '';
+
         msgDiv.innerHTML = `
-            ${!isMe ? `<span style="font-size: 0.7rem; display: block; opacity: 0.7; margin-bottom: 2px;"><a href="/user?id=${msg.sender_id}" style="color: inherit; text-decoration: underline; text-underline-offset: 2px;">${escapeHtml(msg.username)}</a>${storeBadges}</span>` : ''}
+            ${!isMe ? `<span style="font-size: 0.7rem; display: block; opacity: 0.7; margin-bottom: 2px;"><a href="/user?id=${msg.sender_id}" style="color: inherit; text-decoration: underline; text-underline-offset: 2px;">${escapeHtml(msg.username)}</a>${storeBadges}${addFriendBtn}</span>` : ''}
             <p></p>
             <span class="message-time">${time}</span>
         `;
@@ -232,6 +236,30 @@ document.addEventListener('DOMContentLoaded', () => {
     chatInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
         else handleTyping();
+    });
+
+    // Clic sur bouton "+" pour ajouter en ami depuis le chat
+    chatMessages.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.chat-add-friend');
+        if (!btn) return;
+        e.preventDefault();
+        const targetUserId = btn.dataset.userId;
+        const csrfToken = document.querySelector('input[name="csrf_token"]')?.value || '';
+
+        try {
+            const form = new FormData();
+            form.append('receiver_id', targetUserId);
+            form.append('csrf_token', csrfToken);
+            const resp = await fetch('/friend/request', { method: 'POST', body: form });
+            if (resp.redirected || resp.ok) {
+                btn.textContent = '✓';
+                btn.style.opacity = '1';
+                btn.style.color = '#50c878';
+                btn.disabled = true;
+            }
+        } catch (error) {
+            console.error('Error sending friend request:', error);
+        }
     });
 
     // Clic sur un contact → naviguer vers cette session de chat

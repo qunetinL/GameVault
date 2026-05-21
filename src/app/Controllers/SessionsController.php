@@ -6,6 +6,7 @@ use App\Core\Controller;
 use App\Models\Session;
 use App\Models\Game;
 use App\Models\User;
+use App\Models\Friendship;
 
 class SessionsController extends Controller
 {
@@ -82,14 +83,24 @@ class SessionsController extends Controller
 
         $participants = $this->sessionModel->getParticipants($id);
         $votes = $this->sessionModel->getVotes($id);
-        $games = $this->gameModel->findAll(); // Pour proposer des jeux au vote
+        $games = $this->gameModel->findAll();
+
+        $friends = [];
+        if ($session['organizer_id'] === $_SESSION['user_id']) {
+            $friendModel = new Friendship();
+            $allFriends = $friendModel->getFriends($_SESSION['user_id']);
+            // Filtrer les amis déjà invités
+            $participantIds = array_column($participants, 'id');
+            $friends = array_filter($allFriends, fn($f) => !in_array($f['id'], $participantIds));
+        }
 
         return $this->render('sessions/show', [
             'title' => $session['title'] . ' — GameVault',
             'session' => $session,
             'participants' => $participants,
             'votes' => $votes,
-            'games' => $games
+            'games' => $games,
+            'friends' => array_values($friends),
         ]);
     }
 

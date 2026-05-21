@@ -4,7 +4,32 @@
             <h1><?= htmlspecialchars($profileUser['username']) ?></h1>
             <p>Membre depuis le <?= date('d/m/Y', strtotime($profileUser['created_at'])) ?></p>
         </div>
-        <div class="header-actions">
+        <div class="header-actions" style="display: flex; gap: 0.5rem;">
+            <?php if ($profileUser['id'] != $_SESSION['user_id']): ?>
+                <?php if ($friendStatus === null): ?>
+                    <form action="/friend/request" method="POST">
+                        <?php \App\Helpers\CsrfHelper::insertField(); ?>
+                        <input type="hidden" name="receiver_id" value="<?= $profileUser['id'] ?>">
+                        <button type="submit" class="btn btn--primary">Ajouter en ami</button>
+                    </form>
+                <?php elseif ($friendStatus === 'pending' && $isSender): ?>
+                    <button class="btn btn--secondary" disabled style="opacity: 0.6;">Demande envoyée</button>
+                <?php elseif ($friendStatus === 'pending' && !$isSender): ?>
+                    <form action="/friend/respond" method="POST" style="display: flex; gap: 0.5rem;">
+                        <?php \App\Helpers\CsrfHelper::insertField(); ?>
+                        <input type="hidden" name="friendship_id" value="<?= $friendshipId ?>">
+                        <button type="submit" name="status" value="accepted" class="btn btn--primary">Accepter</button>
+                        <button type="submit" name="status" value="rejected" class="btn btn--secondary">Refuser</button>
+                    </form>
+                <?php elseif ($friendStatus === 'accepted'): ?>
+                    <form action="/friend/remove" method="POST">
+                        <?php \App\Helpers\CsrfHelper::insertField(); ?>
+                        <input type="hidden" name="friend_id" value="<?= $profileUser['id'] ?>">
+                        <span style="padding: 0.5rem 1rem; color: #50c878; font-weight: 600;">Ami</span>
+                        <button type="submit" class="btn btn--secondary" style="font-size: 0.85rem;" onclick="return confirm('Supprimer cet ami ?')">Retirer</button>
+                    </form>
+                <?php endif; ?>
+            <?php endif; ?>
             <a href="/users" class="btn btn--secondary">Retour aux membres</a>
         </div>
     </header>
