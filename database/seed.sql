@@ -29,10 +29,10 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- 2. Utilisateurs
 -- AlexGamer: AlexGamer42#  |  SarahStream: SarahStream99@  |  AdminVault: GameVault2026!
 -- ─────────────────────────────────────────────────
-INSERT INTO users (username, email, password_hash, role) VALUES
-('AlexGamer', 'alex@example.com', '$2y$10$uImzfNSmgg1BX2aQPCDhUu50gd3MS3N2i2CeKTn/X60oaBBB55ZF6', 'user'),
-('SarahStream', 'sarah@example.com', '$2y$10$jwOwzcnj3X2lpvbR38LqwuaHmJUV1hxOStqhDgT7o6XAXCSKmn0Pm', 'user'),
-('AdminVault', 'admin@gamevault.com', '$2y$10$SQHftxz8x.UJQgVDEh8.JOjisR2QzzAYXx6mff3sJDBelB0fZ4nuu', 'admin');
+INSERT INTO users (username, email, password_hash, role, email_verified_at) VALUES
+('AlexGamer', 'alex@example.com', '$2y$10$uImzfNSmgg1BX2aQPCDhUu50gd3MS3N2i2CeKTn/X60oaBBB55ZF6', 'user', NOW()),
+('SarahStream', 'sarah@example.com', '$2y$10$jwOwzcnj3X2lpvbR38LqwuaHmJUV1hxOStqhDgT7o6XAXCSKmn0Pm', 'user', NOW()),
+('AdminVault', 'admin@gamevault.com', '$2y$10$SQHftxz8x.UJQgVDEh8.JOjisR2QzzAYXx6mff3sJDBelB0fZ4nuu', 'admin', NOW());
 
 -- ─────────────────────────────────────────────────
 -- 3. Stores (bibliothèques digitales)
