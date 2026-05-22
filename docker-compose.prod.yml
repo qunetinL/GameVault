@@ -6,6 +6,8 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
+    volumes:
+      - ./.env:/var/www/html/.env:ro
     environment:
       - APP_ENV=production
       - DISPLAY_ERRORS=0
